@@ -1,0 +1,4 @@
+*.swp
+*.swo
+*.pyc
+test_behavior_tree
