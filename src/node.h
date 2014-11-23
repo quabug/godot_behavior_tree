@@ -1,6 +1,5 @@
 #ifndef BEHAVIOR_TREE_NODE_H
-#define BEHAVIOR_TREE_NODE_H value
-
+#define BEHAVIOR_TREE_NODE_H
 
 namespace BehaviorTree { class VirtualMachine; }
 
