@@ -27,7 +27,7 @@ void Sequence::init(VirtualMachine& vm, E_State init_state) {
 
 E_State Sequence::child_update(VirtualMachine& vm, void*, E_State child_state) {
     assert(child_state != BH_READY);
-    if (child_state == BH_FAIL || child_state == BH_RUNNING) {
+    if (child_state == BH_FAILURE || child_state == BH_RUNNING) {
         vm.move_index_to_composite_end();
     }
     return child_state;
@@ -43,7 +43,7 @@ E_State Parallel::child_update(VirtualMachine& vm, void* context, E_State child_
         ++count_running;
     } else if (child_state == BH_SUCCESS) {
         ++count_success;
-    } else if (child_state == BH_FAIL) {
+    } else if (child_state == BH_FAILURE) {
         ++count_failed;
     }
     return update(vm, context, child_state);

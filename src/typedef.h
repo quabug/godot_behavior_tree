@@ -4,7 +4,7 @@
 namespace BehaviorTree
 {
     
-enum E_State { BH_READY, BH_SUCCESS, BH_FAIL, BH_RUNNING };
+enum E_State { BH_READY, BH_SUCCESS, BH_FAILURE, BH_RUNNING };
 
 struct Node;
 typedef unsigned short IndexType;

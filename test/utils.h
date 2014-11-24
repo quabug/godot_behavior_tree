@@ -2,6 +2,7 @@
 #define BEHAVIOR_TREE_TEST_UTILS_H
 
 #include "virtual_machine.h"
+#include "composite.h"
 
 using namespace BehaviorTree;
 
@@ -14,5 +15,75 @@ struct ConstructNode
 };
 
 void to_vm(VirtualMachine& vm, ConstructNode& node);
+
+struct Counter
+{
+    int self_update;
+    int child_update;
+    int abort;
+    int prepare;
+
+    Counter():self_update(0), child_update(0), abort(0), prepare(0) {}
+};
+
+template<typename T>
+struct MockNode : public T
+{
+    Counter counter;
+    ConstructNode inner_node;
+    E_State self_update_result;
+    E_State child_update_result;
+
+    MockNode() { inner_node.node = this; }
+
+    void reset() { counter = Counter(); }
+
+    virtual void prepare(VirtualMachine& vm, void* context) override {
+        ++counter.prepare;
+        T::prepare(vm, context);
+    }
+
+    virtual void abort(VirtualMachine& vm, void* context) override {
+        ++counter.abort;
+        T::abort(vm, context);
+    }
+
+    virtual E_State self_update(VirtualMachine& vm, void* context, E_State state) override {
+        ++counter.self_update;
+        self_update_result = T::self_update(vm, context, state);
+        return self_update_result;
+    }
+
+    virtual E_State child_update(VirtualMachine& vm, void* context, E_State child_state) override {
+        ++counter.child_update;
+        child_update_result = T::child_update(vm, context, child_state);
+        return child_update_result;
+    }
+};
+
+struct MockAction : public MockNode<Action>
+{
+    E_State update_result;
+    MockAction() : update_result(BH_SUCCESS) {}
+    MockAction(E_State result) : update_result(result) {}
+
+    virtual E_State update(void*) override {
+        return update_result;
+    }
+};
+
+struct MockSelector : public MockNode<Selector> {};
+struct MockSequence : public MockNode<Sequence> {};
+struct MockParallel : public MockNode<Parallel>
+{
+    E_State update_result;
+    MockParallel() : update_result(BH_SUCCESS) {}
+    MockParallel(E_State result) : update_result(result) {}
+
+    virtual E_State update(VirtualMachine& , void*, E_State ) override {
+        return update_result;
+    }
+};
+
 
 #endif
