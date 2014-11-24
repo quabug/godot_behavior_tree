@@ -14,38 +14,40 @@ namespace BehaviorTree
 class VirtualMachine
 {
 public:
-    typedef unsigned short IndexType;
-    struct NodeData
-    {
-        union {
-        IndexType begin;
-        IndexType index;
-        };
-        IndexType end;
-    };
-
     std::vector<NodeData> data_list;
-    std::vector<Node*> node_list;
-
-private:
+    std::vector<NodeData> running_behaviors;
+    std::vector<IndexType> this_tick_running;
+    std::vector<IndexType> last_tick_running;
     IndexType index_marker;
-    IndexType count_last_running_behaviors;
-    std::stack<NodeData> running_behaviors;
-    std::deque<IndexType> last_running_behaviors;
 
 public:
-    VirtualMachine():index_marker(0), count_last_running_behaviors(0) {}
+    VirtualMachine():index_marker(0) {}
     void tick(void* context);
     void reset();
+
+    inline void increase_index() { ++index_marker; }
+    inline void move_index_to_running() {
+        assert(!last_tick_running.empty());
+        index_marker = last_tick_running.back();
+    }
+    inline void move_index_to_composite_end() {
+        assert(!running_behaviors.empty());
+        index_marker = running_behaviors.back().end;
+    }
 
 private:
     void cancel_skipped_behaviors(void* context);
     void cancel_behavior(IndexType index, void* context);
+    void record_running_index(IndexType index);
     void pop_last_running_behavior();
-    void pop_finished_behaviors();
     void prepare_behavior(IndexType index);
+    void run_composites(E_State state, void* context);
+    E_State run_action(Node* node, void* context);
 
-    inline bool is_running(IndexType index) const { return index == last_running_behaviors.front(); }
+    inline bool is_running(IndexType index) const { 
+        return !last_tick_running.empty() &&
+            index == last_tick_running.back();
+    }
 };
 
 

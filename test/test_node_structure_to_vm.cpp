@@ -1,50 +1,21 @@
 #include "catch.hpp"
-#include "virtual_machine.h"
-
-using namespace BehaviorTree;
-
-struct NodeStructure
-{
-    struct Node : public BehaviorTree::Node
-    {
-        std::vector<Node> children;
-
-        virtual void prepare(VirtualMachine&, void*) override { }
-        virtual E_State update(VirtualMachine&, void*) override { return BH_READY; }
-        virtual void abort(VirtualMachine&, void*) override { }
-    };
-
-    static void to_vm(VirtualMachine& vm, const Node& node) {
-        vm.data_list.clear();
-        VirtualMachine::IndexType index = 0;
-        to_vm_impl(vm, node, index);
-    }
-    
-    static void to_vm_impl(VirtualMachine& vm, const Node& node, VirtualMachine::IndexType& index) {
-        VirtualMachine::NodeData node_data;
-        node_data.begin = index++;
-        vm.data_list.push_back(node_data);
-        for (const Node& child : node.children)
-            to_vm_impl(vm, child, index);
-        vm.data_list[node_data.index].end = index;
-    }
-};
+#include "utils.h"
 
 TEST_CASE( "Node Structure", "[nodestructure]" ) {
     VirtualMachine vm;
 
     SECTION( "single node" ) {
-        NodeStructure::Node node;
-        NodeStructure::to_vm(vm, node);
+        ConstructNode node;
+        to_vm(vm, node);
         REQUIRE(vm.data_list.size() == 1);
         REQUIRE(vm.data_list[0].begin == 0);
         REQUIRE(vm.data_list[0].end == 1);
     }
 
     SECTION( "several children" ) {
-        NodeStructure::Node node;
+        ConstructNode node;
         node.children.resize(10);
-        NodeStructure::to_vm(vm, node);
+        to_vm(vm, node);
         REQUIRE(vm.data_list.size() == 11);
         REQUIRE(vm.data_list[0].begin == 0);
         REQUIRE(vm.data_list[0].end == 11);
@@ -56,14 +27,14 @@ TEST_CASE( "Node Structure", "[nodestructure]" ) {
     }
 
     SECTION( "several hierachy" ) {
-        NodeStructure::Node root;
+        ConstructNode root;
         root.children.resize(1);
         auto iter = root.children.begin();
         for (int i = 0; i < 20; i++) {
             iter->children.resize(1);
             iter = iter->children.begin();
         }
-        NodeStructure::to_vm(vm, root);
+        to_vm(vm, root);
         REQUIRE(vm.data_list.size() == 22);
         for (size_t i = 0; i < vm.data_list.size(); i++) {
             auto node_data = vm.data_list[i];
@@ -73,7 +44,7 @@ TEST_CASE( "Node Structure", "[nodestructure]" ) {
     }
 
     SECTION( "complex node tree" ) {
-        NodeStructure::Node root;
+        ConstructNode root;
         root.children.resize(4);
         root.children[0].children.resize(3);
         root.children[0].children[0].children.resize(2);
@@ -82,7 +53,7 @@ TEST_CASE( "Node Structure", "[nodestructure]" ) {
         root.children[1].children.resize(2);
         root.children[1].children[0].children.resize(1);
         root.children[2].children.resize(1);
-        NodeStructure::to_vm(vm, root);
+        to_vm(vm, root);
         REQUIRE(vm.data_list.size() == 16);
         for (size_t i = 0; i < vm.data_list.size(); i++)
             REQUIRE(vm.data_list[i].begin == i);
