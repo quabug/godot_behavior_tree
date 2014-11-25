@@ -72,9 +72,18 @@ struct MockAction : public MockNode<Action>
     }
 };
 
+struct MockDecorator : public MockNode<Decorator>
+{
+    int update_counter;
+    MockDecorator() : update_counter(0) {}
+    virtual E_State update(void*, E_State child_state) {
+        ++update_counter;
+        return child_state;
+    }
+};
+
 struct MockSelector : public MockNode<Selector> {};
 struct MockSequence : public MockNode<Sequence> {};
 struct MockFailureParallel : public MockNode<Parallel<BH_FAILURE> > {};
-
 
 #endif

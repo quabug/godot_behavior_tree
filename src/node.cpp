@@ -23,7 +23,8 @@ E_State Decorator::self_update(VirtualMachine& vm, void*, E_State) {
 E_State Decorator::child_update(VirtualMachine& vm, void* context, E_State child_state) {
     NodeData self = vm.get_running_node();
     (void)self;
-    assert(self.end - self.begin == 1); // decorator has and only has one child
+    // The number of children of decorator should be none or 1
+    assert(self.end - self.begin <= 2);
     return update(context, child_state);
 }
 
