@@ -1,5 +1,4 @@
 #include "composite.h"
-#include "virtual_machine.h"
 
 namespace BehaviorTree
 {
@@ -32,22 +31,5 @@ E_State Sequence::child_update(VirtualMachine& vm, void*, E_State child_state) {
     }
     return child_state;
 }
-
-void Parallel::init(VirtualMachine& vm, E_State) {
-    vm.increase_index();
-}
-
-E_State Parallel::child_update(VirtualMachine& vm, void* context, E_State child_state) {
-    assert(child_state != BH_READY);
-    if (child_state == BH_RUNNING) {
-        ++count_running;
-    } else if (child_state == BH_SUCCESS) {
-        ++count_success;
-    } else if (child_state == BH_FAILURE) {
-        ++count_failed;
-    }
-    return update(vm, context, child_state);
-}
-
 
 } /* BehaviorTree */ 

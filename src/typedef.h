@@ -6,11 +6,9 @@ namespace BehaviorTree
     
 enum E_State { BH_READY, BH_SUCCESS, BH_FAILURE, BH_RUNNING };
 
-struct Node;
 typedef unsigned short IndexType;
 struct NodeData
 {
-    Node* node;
     union {
     IndexType begin;
     IndexType index;

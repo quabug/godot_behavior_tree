@@ -30,14 +30,22 @@ class Composite : public NodeImpl
     virtual void init(VirtualMachine& vm, E_State init_state) = 0;
 protected:
     virtual E_State self_update(VirtualMachine& vm, void*, E_State init_state) override {
-        init(vm, init_state); return BH_RUNNING;
+        init(vm, init_state);
+        return BH_RUNNING;
     }
+};
+
+class Decorator : public NodeImpl
+{
+    virtual E_State update(void*, E_State child_state) = 0;
+protected:
+    virtual E_State self_update(VirtualMachine& vm, void*, E_State init_state) override;
+    virtual E_State child_update(VirtualMachine& vm, void*, E_State init_state) override;
 };
 
 class Action : public NodeImpl
 {
     virtual E_State update(void*) = 0;
-
 protected:
     virtual E_State self_update(VirtualMachine&, void*, E_State) override;
     virtual E_State child_update(VirtualMachine&, void*, E_State) override;

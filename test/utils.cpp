@@ -1,8 +1,8 @@
 #include "utils.h"
 
 static void to_vm_impl(VirtualMachine& vm, ConstructNode& node, IndexType& index) {
+    vm.node_list.push_back(node.node);
     NodeData node_data;
-    node_data.node = node.node;
     node_data.begin = index++;
     vm.data_list.push_back(node_data);
     for (ConstructNode& child : node.children)

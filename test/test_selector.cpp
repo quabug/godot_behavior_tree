@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "utils.h"
 
-TEST_CASE( "Behavior Tree Selector", "[bt_seq]" ) {
+TEST_CASE( "Behavior Tree Selector", "[bt_sel]" ) {
     VirtualMachine vm;
     MockSelector selector;
     SECTION( "single" ) {

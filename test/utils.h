@@ -74,16 +74,7 @@ struct MockAction : public MockNode<Action>
 
 struct MockSelector : public MockNode<Selector> {};
 struct MockSequence : public MockNode<Sequence> {};
-struct MockParallel : public MockNode<Parallel>
-{
-    E_State update_result;
-    MockParallel() : update_result(BH_SUCCESS) {}
-    MockParallel(E_State result) : update_result(result) {}
-
-    virtual E_State update(VirtualMachine& , void*, E_State ) override {
-        return update_result;
-    }
-};
+struct MockFailureParallel : public MockNode<Parallel<BH_FAILURE> > {};
 
 
 #endif

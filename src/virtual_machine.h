@@ -13,10 +13,23 @@ namespace BehaviorTree
 
 class VirtualMachine
 {
+    struct RunningNode
+    {
+        Node* node;
+        NodeData data;
+    };
+
 public:
     std::vector<NodeData> data_list;
-    std::vector<NodeData> running_behaviors;
+    std::vector<Node*> node_list;
+
+    // NOTE: should I remove those data below from this class scope 
+    //       for making virtual machine eaiser to achieve thread-safty?
+private:
+    std::vector<RunningNode> running_nodes;
     std::vector<IndexType> this_tick_running;
+    // TODO: last_tick_running should be moved from this class scope to agent scope,
+    //       then this virtual mathine can be reused by any agent.
     std::vector<IndexType> last_tick_running;
     IndexType index_marker;
 
@@ -31,8 +44,12 @@ public:
         index_marker = last_tick_running.back();
     }
     inline void move_index_to_composite_end() {
-        assert(!running_behaviors.empty());
-        index_marker = running_behaviors.back().end;
+        assert(!running_nodes.empty());
+        index_marker = running_nodes.back().data.end;
+    }
+    inline NodeData get_running_node() const {
+        assert(!running_nodes.empty());
+        return running_nodes.back().data;
     }
 
 private:
