@@ -55,11 +55,11 @@ public:
 private:
     void cancel_skipped_behaviors(void* context);
     void cancel_behavior(IndexType index, void* context);
-    void record_running_index(IndexType index);
     void pop_last_running_behavior();
     void prepare_behavior(IndexType index);
     void run_composites(E_State state, void* context);
     E_State run_action(Node* node, void* context);
+    void sort_last_running_nodes();
 
     inline bool is_running(IndexType index) const { 
         return !last_tick_running.empty() &&

@@ -1,10 +1,10 @@
 #include "catch.hpp"
 #include "utils.h"
 
-TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_par]" ) {
+TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
     VirtualMachine vm;
     MockDecorator decorator;
-    SECTION( "single" ) {
+    SECTION( "+" ) {
         to_vm(vm, decorator.inner_node);
         vm.tick(nullptr);
         REQUIRE(decorator.counter.prepare == 1);
@@ -15,7 +15,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_par]" ) {
 
     MockAction action_foo;
     decorator.inner_node.children.push_back(action_foo.inner_node);
-    SECTION( "[S]" ) {
+    SECTION( "+S" ) {
         action_foo.update_result = BH_SUCCESS;
         to_vm(vm, decorator.inner_node);
         vm.tick(nullptr);
@@ -42,7 +42,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_par]" ) {
         REQUIRE(action_foo.counter.child_update == 0);
     }
 
-    SECTION( "[F]" ) {
+    SECTION( "+F" ) {
         action_foo.update_result = BH_FAILURE;
         to_vm(vm, decorator.inner_node);
         vm.tick(nullptr);
@@ -69,7 +69,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_par]" ) {
         REQUIRE(action_foo.counter.child_update == 0);
     }
 
-    SECTION( "[R]" ) {
+    SECTION( "+R" ) {
         action_foo.update_result = BH_RUNNING;
         to_vm(vm, decorator.inner_node);
         vm.tick(nullptr);

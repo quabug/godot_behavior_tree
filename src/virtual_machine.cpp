@@ -5,6 +5,7 @@ namespace BehaviorTree
 {
 
 void VirtualMachine::tick(void* context) {
+    sort_last_running_nodes();
     index_marker = 0;
     size_t num_nodes = data_list.size();
     assert(data_list.size() == node_list.size());
@@ -83,10 +84,8 @@ void VirtualMachine::pop_last_running_behavior() {
     last_tick_running.pop_back();
 }
 
-void VirtualMachine::record_running_index(IndexType index) {
-    auto iter = std::lower_bound(
-            this_tick_running.rbegin(), this_tick_running.rend(), index);
-    this_tick_running.insert(iter.base(), index);
+void VirtualMachine::sort_last_running_nodes() {
+    std::sort(last_tick_running.rbegin(), last_tick_running.rend());
 }
 
 } /* BehaviorTree */ 
