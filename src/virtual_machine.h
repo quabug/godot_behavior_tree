@@ -11,32 +11,27 @@
 namespace BehaviorTree
 {
 
-class VirtualMachine
+struct RunningNode
 {
-    struct RunningNode
-    {
-        Node* node;
-        NodeData data;
-    };
+    Node* node;
+    NodeData data;
+};
 
-public:
-    std::vector<NodeData> data_list;
-    std::vector<Node*> node_list;
-
-    // NOTE: should I remove those data below from this class scope 
-    //       for making virtual machine eaiser to achieve thread-safty?
-private:
+struct VirtualMachineData
+{
     std::vector<RunningNode> running_nodes;
     std::vector<IndexType> this_tick_running;
-    // TODO: last_tick_running should be moved from this class scope to agent scope,
-    //       then this virtual mathine can be reused by any agent.
     std::vector<IndexType> last_tick_running;
     IndexType index_marker;
 
-public:
-    VirtualMachine():index_marker(0) {}
-    void tick(void* context);
-    void reset();
+    inline void tick_begin() { 
+        sort_last_running_nodes();
+        index_marker = 0;
+    }
+    inline void tick_end() {
+        this_tick_running.swap(last_tick_running);
+        this_tick_running.clear();
+    }
 
     inline void increase_index() { ++index_marker; }
     inline void move_index_to_running() {
@@ -51,20 +46,42 @@ public:
         assert(!running_nodes.empty());
         return running_nodes.back().data;
     }
-
-private:
-    void cancel_skipped_behaviors(void* context);
-    void cancel_behavior(IndexType index, void* context);
-    void pop_last_running_behavior();
-    void prepare_behavior(IndexType index);
-    void run_composites(E_State state, void* context);
-    E_State run_action(Node* node, void* context);
-    void sort_last_running_nodes();
-
     inline bool is_running(IndexType index) const { 
         return !last_tick_running.empty() &&
             index == last_tick_running.back();
     }
+    inline bool is_current_node_running() const { 
+        return !last_tick_running.empty() &&
+            index_marker == last_tick_running.back();
+    }
+    inline void pop_last_running_behavior() {
+        last_tick_running.pop_back();
+    }
+    inline void add_running_node(Node* node, NodeData node_data) {
+        RunningNode running = { node, node_data };
+        running_nodes.push_back(running);
+    }
+    void sort_last_running_nodes();
+};
+
+class VirtualMachine
+{
+public:
+    std::vector<NodeData> data_list;
+    std::vector<Node*> node_list;
+
+public:
+    VirtualMachine() {}
+    void tick(VirtualMachineData& data, void* context);
+
+private:
+    void cancel_skipped_behaviors(VirtualMachineData& data, void* context);
+    void cancel_behavior(VirtualMachineData& data, void* context);
+    void pop_last_running_behavior();
+    void prepare_behavior(IndexType index);
+    void run_composites(VirtualMachineData& data, E_State state, void* context);
+    E_State run_action(VirtualMachineData& data, Node* node, void* context);
+    void sort_last_running_nodes();
 };
 
 

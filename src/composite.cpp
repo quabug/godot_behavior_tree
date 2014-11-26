@@ -3,11 +3,11 @@
 namespace BehaviorTree
 {
 
-void Selector::init(VirtualMachine& vm, E_State ) {
+void Selector::init(VirtualMachineData& vm, IndexType , E_State ) {
     vm.increase_index();
 }
 
-E_State Selector::child_update(VirtualMachine& vm, void*, E_State child_state) {
+E_State Selector::child_update(VirtualMachineData& vm, IndexType , void*, E_State child_state) {
     assert(child_state != BH_READY);
     if (child_state == BH_SUCCESS || child_state == BH_RUNNING) {
         vm.move_index_to_composite_end();
@@ -15,7 +15,7 @@ E_State Selector::child_update(VirtualMachine& vm, void*, E_State child_state) {
     return child_state;
 }
 
-void Sequence::init(VirtualMachine& vm, E_State init_state) {
+void Sequence::init(VirtualMachineData& vm, IndexType , E_State init_state) {
     assert(init_state == BH_READY || init_state == BH_RUNNING);
     if (init_state == BH_RUNNING) {
         vm.move_index_to_running();
@@ -24,7 +24,7 @@ void Sequence::init(VirtualMachine& vm, E_State init_state) {
     }
 }
 
-E_State Sequence::child_update(VirtualMachine& vm, void*, E_State child_state) {
+E_State Sequence::child_update(VirtualMachineData& vm, IndexType , void*, E_State child_state) {
     assert(child_state != BH_READY);
     if (child_state == BH_FAILURE || child_state == BH_RUNNING) {
         vm.move_index_to_composite_end();

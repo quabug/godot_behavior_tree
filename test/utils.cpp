@@ -15,3 +15,8 @@ void to_vm(VirtualMachine& vm, ConstructNode& node) {
     IndexType index = 0;
     to_vm_impl(vm, node, index);
 }
+
+void tick_vm(VirtualMachine& vm, VirtualMachineData& data, MockAgent& agent) {
+    agent.reset();
+    vm.tick(data, &agent);
+}

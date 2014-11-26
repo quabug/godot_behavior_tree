@@ -2,97 +2,112 @@
 #include "utils.h"
 
 TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
+    VirtualMachineData data;
     VirtualMachine vm;
     MockDecorator decorator;
+    MockAgent agent;
+    agent.data_list.resize(1);
+
     SECTION( "+" ) {
+        const MockAgent::NodeData& decorator_data = agent.data_list[0];
         to_vm(vm, decorator.inner_node);
-        vm.tick(nullptr);
-        REQUIRE(decorator.counter.prepare == 1);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 1);
-        REQUIRE(decorator.counter.child_update == 0);
+
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.counter.prepare == 1);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 0);
     }
+
 
     MockAction action_foo;
     decorator.inner_node.children.push_back(action_foo.inner_node);
+    agent.data_list.resize(2);
+
     SECTION( "+S" ) {
-        action_foo.update_result = BH_SUCCESS;
+        const MockAgent::NodeData& decorator_data = agent.data_list[0];
+        const MockAgent::NodeData& action_foo_data = agent.data_list[1];
         to_vm(vm, decorator.inner_node);
-        vm.tick(nullptr);
-        REQUIRE(decorator.child_update_result == BH_SUCCESS);
-        REQUIRE(decorator.update_counter == 1);
-        REQUIRE(decorator.counter.prepare == 1);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 1);
-        REQUIRE(decorator.counter.child_update == 1);
-        REQUIRE(action_foo.counter.prepare == 1);
-        REQUIRE(action_foo.counter.abort == 0);
-        REQUIRE(action_foo.counter.self_update == 1);
-        REQUIRE(action_foo.counter.child_update == 0);
-        vm.tick(nullptr);
-        REQUIRE(decorator.child_update_result == BH_SUCCESS);
-        REQUIRE(decorator.update_counter == 2);
-        REQUIRE(decorator.counter.prepare == 2);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 2);
-        REQUIRE(decorator.counter.child_update == 2);
-        REQUIRE(action_foo.counter.prepare == 2);
-        REQUIRE(action_foo.counter.abort == 0);
-        REQUIRE(action_foo.counter.self_update == 2);
-        REQUIRE(action_foo.counter.child_update == 0);
+
+        action_foo.update_result = BH_SUCCESS;
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.child_update_result == BH_SUCCESS);
+        REQUIRE(decorator_data.counter.prepare == 1);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 1);
+        REQUIRE(action_foo_data.counter.prepare == 1);
+        REQUIRE(action_foo_data.counter.abort == 0);
+        REQUIRE(action_foo_data.counter.self_update == 1);
+        REQUIRE(action_foo_data.counter.child_update == 0);
+
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.child_update_result == BH_SUCCESS);
+        REQUIRE(decorator_data.counter.prepare == 1);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 1);
+        REQUIRE(action_foo_data.counter.prepare == 1);
+        REQUIRE(action_foo_data.counter.abort == 0);
+        REQUIRE(action_foo_data.counter.self_update == 1);
+        REQUIRE(action_foo_data.counter.child_update == 0);
     }
 
     SECTION( "+F" ) {
-        action_foo.update_result = BH_FAILURE;
+        const MockAgent::NodeData& decorator_data = agent.data_list[0];
+        const MockAgent::NodeData& action_foo_data = agent.data_list[1];
         to_vm(vm, decorator.inner_node);
-        vm.tick(nullptr);
-        REQUIRE(decorator.child_update_result == BH_FAILURE);
-        REQUIRE(decorator.update_counter == 1);
-        REQUIRE(decorator.counter.prepare == 1);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 1);
-        REQUIRE(decorator.counter.child_update == 1);
-        REQUIRE(action_foo.counter.prepare == 1);
-        REQUIRE(action_foo.counter.abort == 0);
-        REQUIRE(action_foo.counter.self_update == 1);
-        REQUIRE(action_foo.counter.child_update == 0);
-        vm.tick(nullptr);
-        REQUIRE(decorator.child_update_result == BH_FAILURE);
-        REQUIRE(decorator.update_counter == 2);
-        REQUIRE(decorator.counter.prepare == 2);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 2);
-        REQUIRE(decorator.counter.child_update == 2);
-        REQUIRE(action_foo.counter.prepare == 2);
-        REQUIRE(action_foo.counter.abort == 0);
-        REQUIRE(action_foo.counter.self_update == 2);
-        REQUIRE(action_foo.counter.child_update == 0);
+
+        action_foo.update_result = BH_FAILURE;
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.child_update_result == BH_FAILURE);
+        REQUIRE(decorator_data.counter.prepare == 1);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 1);
+        REQUIRE(action_foo_data.counter.prepare == 1);
+        REQUIRE(action_foo_data.counter.abort == 0);
+        REQUIRE(action_foo_data.counter.self_update == 1);
+        REQUIRE(action_foo_data.counter.child_update == 0);
+
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.child_update_result == BH_FAILURE);
+        REQUIRE(decorator_data.counter.prepare == 1);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 1);
+        REQUIRE(action_foo_data.counter.prepare == 1);
+        REQUIRE(action_foo_data.counter.abort == 0);
+        REQUIRE(action_foo_data.counter.self_update == 1);
+        REQUIRE(action_foo_data.counter.child_update == 0);
     }
 
     SECTION( "+R" ) {
-        action_foo.update_result = BH_RUNNING;
+        const MockAgent::NodeData& decorator_data = agent.data_list[0];
+        const MockAgent::NodeData& action_foo_data = agent.data_list[1];
         to_vm(vm, decorator.inner_node);
-        vm.tick(nullptr);
-        REQUIRE(decorator.child_update_result == BH_RUNNING);
-        REQUIRE(decorator.update_counter == 1);
-        REQUIRE(decorator.counter.prepare == 1);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 1);
-        REQUIRE(decorator.counter.child_update == 1);
-        REQUIRE(action_foo.counter.prepare == 1);
-        REQUIRE(action_foo.counter.abort == 0);
-        REQUIRE(action_foo.counter.self_update == 1);
-        REQUIRE(action_foo.counter.child_update == 0);
-        vm.tick(nullptr);
-        REQUIRE(decorator.child_update_result == BH_RUNNING);
-        REQUIRE(decorator.update_counter == 2);
-        REQUIRE(decorator.counter.prepare == 1);
-        REQUIRE(decorator.counter.abort == 0);
-        REQUIRE(decorator.counter.self_update == 2);
-        REQUIRE(decorator.counter.child_update == 2);
-        REQUIRE(action_foo.counter.prepare == 1);
-        REQUIRE(action_foo.counter.abort == 0);
-        REQUIRE(action_foo.counter.self_update == 2);
-        REQUIRE(action_foo.counter.child_update == 0);
+
+        action_foo.update_result = BH_RUNNING;
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.child_update_result == BH_RUNNING);
+        REQUIRE(decorator_data.counter.prepare == 1);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 1);
+        REQUIRE(action_foo_data.counter.prepare == 1);
+        REQUIRE(action_foo_data.counter.abort == 0);
+        REQUIRE(action_foo_data.counter.self_update == 1);
+        REQUIRE(action_foo_data.counter.child_update == 0);
+
+        tick_vm(vm, data, agent);
+        REQUIRE(decorator_data.child_update_result == BH_RUNNING);
+        REQUIRE(decorator_data.counter.prepare == 0);
+        REQUIRE(decorator_data.counter.abort == 0);
+        REQUIRE(decorator_data.counter.self_update == 1);
+        REQUIRE(decorator_data.counter.child_update == 1);
+        REQUIRE(action_foo_data.counter.prepare == 0);
+        REQUIRE(action_foo_data.counter.abort == 0);
+        REQUIRE(action_foo_data.counter.self_update == 1);
+        REQUIRE(action_foo_data.counter.child_update == 0);
     }
 }

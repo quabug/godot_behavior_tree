@@ -14,50 +14,75 @@ struct ConstructNode
     ConstructNode(Node* node_=nullptr):node(node_) {}
 };
 
-void to_vm(VirtualMachine& vm, ConstructNode& node);
-
 struct Counter
 {
     int self_update;
     int child_update;
     int abort;
     int prepare;
-
-    Counter():self_update(0), child_update(0), abort(0), prepare(0) {}
 };
+
+struct MockAgent
+{
+    // TODO: use a blackboard to store node data?
+    struct NodeData
+    {
+        Counter counter;
+        E_State self_update_result;
+        E_State child_update_result;
+    };
+    std::vector<NodeData> data_list;
+
+    void reset() {
+        for (NodeData& data : data_list) {
+            data.counter.self_update = 0;
+            data.counter.child_update = 0;
+            data.counter.abort = 0;
+            data.counter.prepare = 0;
+            data.self_update_result = BH_READY;
+            data.child_update_result = BH_READY;
+        }
+    }
+};
+
+void to_vm(VirtualMachine& vm, ConstructNode& node);
+void tick_vm(VirtualMachine& vm, VirtualMachineData& data, MockAgent& agent);
 
 template<typename T>
 struct MockNode : public T
 {
-    Counter counter;
     ConstructNode inner_node;
-    E_State self_update_result;
-    E_State child_update_result;
 
     MockNode() { inner_node.node = this; }
 
-    void reset() { counter = Counter(); }
-
-    virtual void prepare(VirtualMachine& vm, void* context) override {
-        ++counter.prepare;
-        T::prepare(vm, context);
+    virtual void prepare(VirtualMachineData& vm, IndexType index, void* context) override {
+        MockAgent* agent = static_cast<MockAgent*>(context);
+        MockAgent::NodeData& node_data = agent->data_list[index];
+        ++node_data.counter.prepare;
+        T::prepare(vm, index, context);
     }
 
-    virtual void abort(VirtualMachine& vm, void* context) override {
-        ++counter.abort;
-        T::abort(vm, context);
+    virtual void abort(VirtualMachineData& vm, IndexType index, void* context) override {
+        MockAgent* agent = static_cast<MockAgent*>(context);
+        MockAgent::NodeData& node_data = agent->data_list[index];
+        ++node_data.counter.abort;
+        T::abort(vm, index, context);
     }
 
-    virtual E_State self_update(VirtualMachine& vm, void* context, E_State state) override {
-        ++counter.self_update;
-        self_update_result = T::self_update(vm, context, state);
-        return self_update_result;
+    virtual E_State self_update(VirtualMachineData& vm, IndexType index, void* context, E_State state) override {
+        MockAgent* agent = static_cast<MockAgent*>(context);
+        MockAgent::NodeData& node_data = agent->data_list[index];
+        ++node_data.counter.self_update;
+        node_data.self_update_result = T::self_update(vm, index, context, state);
+        return node_data.self_update_result;
     }
 
-    virtual E_State child_update(VirtualMachine& vm, void* context, E_State child_state) override {
-        ++counter.child_update;
-        child_update_result = T::child_update(vm, context, child_state);
-        return child_update_result;
+    virtual E_State child_update(VirtualMachineData& vm, IndexType index, void* context, E_State child_state) override {
+        MockAgent* agent = static_cast<MockAgent*>(context);
+        MockAgent::NodeData& node_data = agent->data_list[index];
+        ++node_data.counter.child_update;
+        node_data.child_update_result = T::child_update(vm, index, context, child_state);
+        return node_data.child_update_result;
     }
 };
 
@@ -67,17 +92,14 @@ struct MockAction : public MockNode<Action>
     MockAction() : update_result(BH_SUCCESS) {}
     MockAction(E_State result) : update_result(result) {}
 
-    virtual E_State update(void*) override {
+    virtual E_State update(IndexType, void*) override {
         return update_result;
     }
 };
 
 struct MockDecorator : public MockNode<Decorator>
 {
-    int update_counter;
-    MockDecorator() : update_counter(0) {}
-    virtual E_State update(void*, E_State child_state) {
-        ++update_counter;
+    virtual E_State update(IndexType, void*, E_State child_state) {
         return child_state;
     }
 };

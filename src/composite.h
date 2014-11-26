@@ -9,15 +9,15 @@ namespace BehaviorTree
 class Selector : public Composite
 {
 protected:
-    virtual void init(VirtualMachine& vm, E_State state) override;
-    virtual E_State child_update(VirtualMachine& vm, void*, E_State child_state) override;
+    virtual void init(VirtualMachineData& vm, IndexType index, E_State state) override;
+    virtual E_State child_update(VirtualMachineData& vm, IndexType index, void*, E_State child_state) override;
 };
 
 class Sequence : public Composite
 {
 protected:
-    virtual void init(VirtualMachine& vm, E_State state) override;
-    virtual E_State child_update(VirtualMachine& vm, void*, E_State child_state) override;
+    virtual void init(VirtualMachineData& vm, IndexType index, E_State state) override;
+    virtual E_State child_update(VirtualMachineData& vm, IndexType index, void*, E_State child_state) override;
 };
 
 // instead of running children nodes in seperated thread,
@@ -33,18 +33,18 @@ public:
     }
 
 protected:
-    virtual E_State child_update(VirtualMachine& vm, void* context, E_State child_state) override;
-    virtual void init(VirtualMachine& vm, E_State state) override;
+    virtual E_State child_update(VirtualMachineData& vm, IndexType index, void* context, E_State child_state) override;
+    virtual void init(VirtualMachineData& vm, IndexType index, E_State state) override;
 };
 
 template<E_State OBSERVE_STATE>
-void Parallel<OBSERVE_STATE>::init(VirtualMachine& vm, E_State) {
+void Parallel<OBSERVE_STATE>::init(VirtualMachineData& vm, IndexType , E_State) {
     is_trigge_observe_state = false;
     vm.increase_index();
 }
 
 template<E_State OBSERVE_STATE>
-E_State Parallel<OBSERVE_STATE>::child_update(VirtualMachine& , void* , E_State child_state) {
+E_State Parallel<OBSERVE_STATE>::child_update(VirtualMachineData& , IndexType , void* , E_State child_state) {
     assert(child_state != BH_READY);
     if (child_state == OBSERVE_STATE)
         is_trigge_observe_state = true;
