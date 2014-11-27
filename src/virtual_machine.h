@@ -6,12 +6,6 @@
 namespace BehaviorTree
 {
 
-
-struct IndexGreatThanComp
-{
-    bool operator()(IndexType lhs, IndexType rhs) const { return lhs > rhs; }
-};
-
 // running data
 struct VMRunningData
 {
