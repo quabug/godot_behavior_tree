@@ -9,7 +9,7 @@ class BTRoot : public BTNode
 {
     OBJ_TYPE(BTRoot, BTNode);
 
-    VMRunningData vm_data;
+    BehaviorTree::VMRunningData vm_data;
 
 public:
     BTRoot() {}

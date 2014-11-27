@@ -5,4 +5,4 @@ SRCS=main.cpp test_behavior_tree.cpp test_action.cpp test_sequence.cpp test_sele
 MAIN=unittest.run
 
 all:
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(SRCS) -DUNIT_TEST
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(SRCS)

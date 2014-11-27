@@ -32,16 +32,26 @@ struct NodeData
 
 #if defined(BEHAVIOR_TREE_AS_GODOT_MODULE)
 
-template<typename T> class BTVector : public Vector<T> {}
+template<typename T>
+class BTVector : public Vector<T>
+{
+public:
+    T &      back()       { return Vector<T>::operator[](Vector<T>::size()-1); }
+    T const& back() const { return Vector<T>::operator[](Vector<T>::size()-1); }
 
-template<typename T, typename COMPARATOR>
+    void pop_back() { Vector<T>::resize(Vector<T>::size()-1); }
+
+    void swap(BTVector& other) { other = *this; Vector<T>::clear(); }
+};
+
+template<typename COMPARATOR, typename T>
 void sort(BTVector<T>& vector) { vector.sort_custom<COMPARATOR>(); }
 
 #else
 
 template<typename T> class BTVector : public std::vector<T> {};
 
-template<typename T, typename COMPARATOR>
+template<typename COMPARATOR, typename T>
 void sort(BTVector<T>& vector) { std::sort(vector.begin(), vector.end(), COMPARATOR()); }
 
 #endif

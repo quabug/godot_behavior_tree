@@ -21,6 +21,7 @@ protected:
     static void _bind_methods() {}
 
 private:
+    virtual void move_child_notify(Node *p_child, int pos) override;
     virtual void add_child_notify(Node *p_child) override;
     virtual void remove_child_notify(Node *p_child) override;
 

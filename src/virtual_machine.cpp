@@ -109,11 +109,11 @@ void tick_end(VMRunningData& running_data) {
 
 struct IndexGreatThanComp
 {
-    bool operator()(IndexType lhs, IndexType rhs) { return lhs > rhs; }
+    bool operator()(IndexType lhs, IndexType rhs) const { return lhs > rhs; }
 };
 
 void sort_last_running_nodes(VMRunningData& running_data) {
-    sort<IndexType, IndexGreatThanComp>(running_data.last_tick_running);
+    sort<IndexGreatThanComp>(running_data.last_tick_running);
 }
 
 bool is_current_node_running(VMRunningData& running_data) { 
