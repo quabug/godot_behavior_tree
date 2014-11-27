@@ -3,17 +3,23 @@
 #define BTROOT_H
 
 #include "scene/main/node.h"
-#include "node.h"
+#include "bt_node.h"
 
-class BTRoot : public Node, public BehaviorTree::Node
+class BTRoot : public BTNode
 {
-    OBJ_TYPE(BTRoot, Node);
+    OBJ_TYPE(BTRoot, BTNode);
+
+    VMRunningData vm_data;
 
 public:
-    BTNode() {}
+    BTRoot() {}
+
+    using BTNode::set_vm;
+    using BTNode::get_vm;
 
 protected:
     static void _bind_methods() {}
+
 };
 
 #endif

@@ -2,9 +2,9 @@
 #include "utils.h"
 
 TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
-    VirtualMachineData data;
-    VirtualMachine vm;
-    MockFailureParallel parallel;
+    VMRunningData data;
+    VMStructureData vm;
+    MockParallel parallel;
     MockAgent agent;
     agent.data_list.resize(1);
 
@@ -60,7 +60,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
 
         action_foo.update_result = BH_FAILURE;
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -71,7 +71,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_foo_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -164,7 +164,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_FAILURE;
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -179,7 +179,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -203,7 +203,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         action_foo.update_result = BH_FAILURE;
         action_bar.update_result = BH_SUCCESS;
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -218,7 +218,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -242,7 +242,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         action_foo.update_result = BH_FAILURE;
         action_bar.update_result = BH_RUNNING;
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -257,7 +257,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -281,7 +281,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         action_foo.update_result = BH_RUNNING;
         action_bar.update_result = BH_FAILURE;
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -296,7 +296,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -312,7 +312,7 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
     }
 
 
-    MockFailureParallel root_parallel;
+    MockParallel root_parallel;
     root_parallel.inner_node.children.push_back(parallel.inner_node);
     agent.data_list.resize(4);
 
@@ -376,12 +376,12 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         action_foo.update_result = BH_FAILURE;
         action_bar.update_result = BH_SUCCESS;
         tick_vm(vm, data, agent);
-        REQUIRE(root_parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(root_parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(root_parallel_data.counter.prepare == 1);
         REQUIRE(root_parallel_data.counter.abort == 0);
         REQUIRE(root_parallel_data.counter.self_update == 1);
         REQUIRE(root_parallel_data.counter.child_update == 1);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -396,12 +396,12 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(root_parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(root_parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(root_parallel_data.counter.prepare == 1);
         REQUIRE(root_parallel_data.counter.abort == 0);
         REQUIRE(root_parallel_data.counter.self_update == 1);
         REQUIRE(root_parallel_data.counter.child_update == 1);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -426,12 +426,12 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         action_foo.update_result = BH_RUNNING;
         action_bar.update_result = BH_FAILURE;
         tick_vm(vm, data, agent);
-        REQUIRE(root_parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(root_parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(root_parallel_data.counter.prepare == 1);
         REQUIRE(root_parallel_data.counter.abort == 0);
         REQUIRE(root_parallel_data.counter.self_update == 1);
         REQUIRE(root_parallel_data.counter.child_update == 1);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -446,12 +446,12 @@ TEST_CASE( "Behavior Tree FaitureParallel", "[bt_par]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         tick_vm(vm, data, agent);
-        REQUIRE(root_parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(root_parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(root_parallel_data.counter.prepare == 1);
         REQUIRE(root_parallel_data.counter.abort == 0);
         REQUIRE(root_parallel_data.counter.self_update == 1);
         REQUIRE(root_parallel_data.counter.child_update == 1);
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);

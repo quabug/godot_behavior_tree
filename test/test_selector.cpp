@@ -2,8 +2,8 @@
 #include "utils.h"
 
 TEST_CASE( "Behavior Tree Selector", "[bt_sel]" ) {
-    VirtualMachineData data;
-    VirtualMachine vm;
+    VMRunningData data;
+    VMStructureData vm;
     MockSelector selector;
     MockAgent agent;
     agent.data_list.resize(1);

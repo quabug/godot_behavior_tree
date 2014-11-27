@@ -2,11 +2,11 @@
 #include "utils.h"
 
 TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
-    VirtualMachineData data;
-    VirtualMachine vm;
+    VMRunningData data;
+    VMStructureData vm;
 
     SECTION( "{R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}" ) {
-        MockFailureParallel parallel;
+        MockParallel parallel;
         MockSelector selector;
         MockSequence sequence;
         MockDecorator decorator;
@@ -47,7 +47,7 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
         action[6].update_result = BH_RUNNING;
         tick_vm(vm, data, agent);
         // {R,[S,F,R],(F,+S,R)}
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -162,7 +162,7 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
         action[6].update_result = BH_SUCCESS;
         tick_vm(vm, data, agent);
         // {S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -213,10 +213,10 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
 }
 
 TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
-    VirtualMachineData data_bar;
-    VirtualMachine vm;
+    VMRunningData data_bar;
+    VMStructureData vm;
 
-    MockFailureParallel parallel;
+    MockParallel parallel;
     MockSelector selector;
     MockSequence sequence;
     MockDecorator decorator;
@@ -235,7 +235,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
     to_vm(vm, parallel.inner_node);
 
     SECTION( "{R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}" ) {
-        VirtualMachineData data;
+        VMRunningData data;
         MockAgent agent;
         agent.data_list.resize(11);
         const MockAgent::NodeData& parallel_data = agent.data_list[0];
@@ -259,7 +259,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[6].update_result = BH_RUNNING;
         tick_vm(vm, data, agent);
         // {R,[S,F,R],(F,+S,R)}
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -374,7 +374,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[6].update_result = BH_SUCCESS;
         tick_vm(vm, data, agent);
         // {S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -424,7 +424,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
     }
 
     SECTION( "{R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}" ) {
-        VirtualMachineData data;
+        VMRunningData data;
         MockAgent agent;
         agent.data_list.resize(11);
         const MockAgent::NodeData& parallel_data = agent.data_list[0];
@@ -448,7 +448,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[6].update_result = BH_RUNNING;
         tick_vm(vm, data, agent);
         // {R,[S,F,R],(F,+S,R)}
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);
@@ -563,7 +563,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[6].update_result = BH_SUCCESS;
         tick_vm(vm, data, agent);
         // {S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}
-        REQUIRE(parallel_data.child_update_result == BH_FAILURE);
+        REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
         REQUIRE(parallel_data.counter.abort == 0);
         REQUIRE(parallel_data.counter.self_update == 1);

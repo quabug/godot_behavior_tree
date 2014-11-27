@@ -46,6 +46,8 @@ flags = [
 # You 100% do NOT need -DUSE_CLANG_COMPLETER in your flags; only the YCM
 # source code needs it.
 '-DUSE_CLANG_COMPLETER',
+'-DUNIT_TEST',
+# THIS IS IMPORTANT! Without a "-std=<something>" flag, clang won't know which
 # THIS IS IMPORTANT! Without a "-std=<something>" flag, clang won't know which
 # language to use when compiling headers. So it will guess. Badly. So C++
 # headers will be compiled as C headers. You don't want that so ALWAYS specify
@@ -70,9 +72,33 @@ flags = [
 '-I',
 'src',
 '-I',
-'../games/godot/core',
-'-I',
 '../games/godot',
+'-I',
+'../games/godotcore',
+'-I',
+'../games/godotcore/bind',
+'-I',
+'../games/godotcore/io',
+'-I',
+'../games/godotcore/math',
+'-I',
+'../games/godotcore/os',
+'-I',
+'../games/godotservers',
+'-I',
+'../games/godotscene',
+'-I',
+'../games/godotscene/main',
+'-I',
+'../games/godotscene/2d',
+'-I',
+'../games/godotscene/3d',
+'-I',
+'../games/godottools',
+'-I',
+'../games/godotdrivers',
+'-I',
+'./ClangCompleter'
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the

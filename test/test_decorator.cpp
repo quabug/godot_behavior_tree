@@ -2,8 +2,8 @@
 #include "utils.h"
 
 TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
-    VirtualMachineData data;
-    VirtualMachine vm;
+    VMRunningData data;
+    VMStructureData vm;
     MockDecorator decorator;
     MockAgent agent;
     agent.data_list.resize(1);

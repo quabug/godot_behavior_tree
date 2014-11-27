@@ -2,8 +2,8 @@
 #include "utils.h"
 
 TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
-    VirtualMachineData data;
-    VirtualMachine vm;
+    VMRunningData data;
+    VMStructureData vm;
     MockSequence sequence;
     MockAgent agent;
     agent.data_list.resize(1);

@@ -45,8 +45,8 @@ struct MockAgent
     }
 };
 
-void to_vm(VirtualMachine& vm, ConstructNode& node);
-void tick_vm(VirtualMachine& vm, VirtualMachineData& data, MockAgent& agent);
+void to_vm(VMStructureData& vm, ConstructNode& node);
+void tick_vm(VMStructureData& vm, VMRunningData& data, MockAgent& agent);
 
 template<typename T>
 struct MockNode : public T
@@ -55,21 +55,21 @@ struct MockNode : public T
 
     MockNode() { inner_node.node = this; }
 
-    virtual void prepare(VirtualMachineData& vm, IndexType index, void* context) override {
+    virtual void prepare(VMRunningData& vm, IndexType index, void* context) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.prepare;
         T::prepare(vm, index, context);
     }
 
-    virtual void abort(VirtualMachineData& vm, IndexType index, void* context) override {
+    virtual void abort(VMRunningData& vm, IndexType index, void* context) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.abort;
         T::abort(vm, index, context);
     }
 
-    virtual E_State self_update(VirtualMachineData& vm, IndexType index, void* context, E_State state) override {
+    virtual E_State self_update(VMRunningData& vm, IndexType index, void* context, E_State state) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.self_update;
@@ -77,7 +77,7 @@ struct MockNode : public T
         return node_data.self_update_result;
     }
 
-    virtual E_State child_update(VirtualMachineData& vm, IndexType index, void* context, E_State child_state) override {
+    virtual E_State child_update(VMRunningData& vm, IndexType index, void* context, E_State child_state) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.child_update;
@@ -106,6 +106,6 @@ struct MockDecorator : public MockNode<Decorator>
 
 struct MockSelector : public MockNode<Selector> {};
 struct MockSequence : public MockNode<Sequence> {};
-struct MockFailureParallel : public MockNode<Parallel<BH_FAILURE> > {};
+struct MockParallel : public MockNode<Parallel<BH_SUCCESS> > {};
 
 #endif
