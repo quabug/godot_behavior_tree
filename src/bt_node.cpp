@@ -1,16 +1,16 @@
 #include "bt_node.h"
 
-void BTNode::move_child_notify(Node *p_child, int ) {
-    BTNode* p_btnode = p_child->cast_to<BTNode>();
-	ERR_EXPLAIN("Child node is not a BTNode.");
-	ERR_FAIL_NULL(p_btnode);
+//void BTNode::move_child_notify(Node *p_child, int ) {
+    //BTNode* p_btnode = p_child->cast_to<BTNode>();
+	//ERR_EXPLAIN("Child node is not a BTNode.");
+	//ERR_FAIL_NULL(p_btnode);
 
-    if (p_btnode) {
-        _add_child_node(p_btnode);
-    } else {
-        remove_child(p_child);
-    }
-}
+    //if (p_btnode) {
+        //_add_child_node(p_btnode);
+    //} else {
+        //remove_child(p_child);
+    //}
+//}
 
 void BTNode::add_child_notify(Node *p_child) {
     BTNode* p_btnode = p_child->cast_to<BTNode>();
