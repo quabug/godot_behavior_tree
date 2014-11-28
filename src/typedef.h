@@ -54,7 +54,7 @@ public:
 };
 
 template<typename COMPARATOR, typename T>
-void sort(BTVector<T>& vector) { vector.sort_custom<COMPARATOR>(); }
+void sort(BTVector<T>& vector) { vector.template sort_custom<COMPARATOR>(); }
 
 #else
 
