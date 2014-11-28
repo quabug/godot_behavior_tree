@@ -8,25 +8,28 @@ class BTNode : public Node
 {
     OBJ_TYPE(BTNode, Node);
 
-protected:
-    BehaviorTree::VMStructureData* vm;
-
-    inline void set_vm(BehaviorTree::VMStructureData* vm) { this->vm = vm; }
-    inline BehaviorTree::VMStructureData* get_vm() { return vm; }
+    BehaviorTree::IndexType bt_index;
 
 public:
-    BTNode():vm(NULL) {}
+    virtual BehaviorTree::Node* get_behavior_node() = 0;
+
+    virtual void add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) = 0;
+    virtual void remove_child_node(Vector<BehaviorTree::IndexType>& node_hierarchy) = 0;
+    //virtual void move_child_node(BTNode &child, int pos, Vector<BehaviorTree::IndexType> node_hierarchy) = 0;
+
+    inline BehaviorTree::IndexType get_bt_index() const { return bt_index; }
+    inline void set_bt_index(BehaviorTree::IndexType index) { bt_index = index; }
 
 protected:
+    Variant script_call(StringName method, void* context);
+
     static void _bind_methods() {}
 
 private:
-    //virtual void move_child_notify(Node *p_child, int pos) override;
     virtual void add_child_notify(Node *p_child) override;
     virtual void remove_child_notify(Node *p_child) override;
+    //virtual void move_child_notify(Node *p_child, int pos) override;
 
-    void _add_child_node(BTNode *p_child);
-    void _remove_child_node(BTNode *p_child);
 };
 
 #endif

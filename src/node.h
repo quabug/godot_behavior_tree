@@ -40,7 +40,7 @@ class Decorator : public NodeImpl
     virtual E_State update(IndexType, void*, E_State child_state) = 0;
 protected:
     virtual E_State self_update(VMRunningData& running_data, IndexType index, void*, E_State init_state) override;
-    virtual E_State child_update(VMRunningData& running_data, IndexType index, void*, E_State init_state) override;
+    virtual E_State child_update(VMRunningData& running_data, IndexType index, void*, E_State child_state) override;
 };
 
 class Action : public NodeImpl

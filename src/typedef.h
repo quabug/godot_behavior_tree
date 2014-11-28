@@ -2,16 +2,22 @@
 #define BEHAVIOR_TREE_TYPEDEF_H
 
 #if defined(BEHAVIOR_TREE_AS_GODOT_MODULE)
+
 #include "core/vector.h"
 #define BT_STATIC_ASSERT(x, y)
 #define BT_ASSERT(x)
+#ifndef override
 #define override
+#endif
+
 #else
+
 #include <cassert>
 #include <vector>
 #include <algorithm>
 #define BT_STATIC_ASSERT(x, y) static_assert(x, y)
 #define BT_ASSERT(x) assert(x)
+
 #endif
 
 namespace BehaviorTree { struct Node; }
@@ -22,6 +28,8 @@ namespace BehaviorTree
 enum E_State { BH_READY, BH_SUCCESS, BH_FAILURE, BH_RUNNING };
 
 typedef unsigned short IndexType;
+const IndexType INDEX_TYPE_MAX = 0xffff;
+
 struct NodeData
 {
     union {
