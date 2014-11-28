@@ -18,7 +18,6 @@ void BTNode::add_child_notify(Node *p_child) {
 	ERR_FAIL_NULL(p_btnode);
     if (p_btnode) {
         Vector<BehaviorTree::IndexType> node_hierarchy;
-        node_hierarchy.push_back(get_bt_index());
         add_child_node(*p_btnode, node_hierarchy);
     }
 }
@@ -29,9 +28,7 @@ void BTNode::remove_child_notify(Node *p_child) {
 	ERR_FAIL_NULL(p_btnode);
     if (p_btnode) {
         Vector<BehaviorTree::IndexType> node_hierarchy;
-        node_hierarchy.push_back(p_btnode->get_bt_index());
-        node_hierarchy.push_back(get_bt_index());
-        remove_child_node(node_hierarchy);
+        remove_child_node(*p_btnode, node_hierarchy);
     }
 }
 
@@ -42,7 +39,7 @@ Variant BTNode::script_call(StringName method, void* context) {
     if (get_script_instance()) {
         const Variant* ptr[1]={ static_cast<Variant*>(context) };
         // NOTE: what's the difference between call_multilevel and call?
-         result = get_script_instance()->call(method,ptr,1);
+        result = get_script_instance()->call(method,ptr,1);
     }
     return result;
 }

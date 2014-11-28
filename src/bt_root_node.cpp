@@ -4,15 +4,16 @@
 
 BTRootNode::BTRootNode()
 {
-    set_bt_index(0);
     BehaviorTree::NodeData node_data;
     node_data.begin = 0;
     node_data.end = 1;
+    set_bt_node_data(node_data);
     bt_structure_data.push_back(node_data);
     bt_node_list.push_back(&behavior_node);
 }
 
 void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
+    node_hierarchy.push_back(0);
     BehaviorTree::VMStructureData temp_vm_structure_data;
     // add new child at the end of its parent.
     int child_index = bt_structure_data[node_hierarchy[0]].end;
@@ -46,9 +47,9 @@ void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& 
     }
 }
 
-void BTRootNode::remove_child_node(Vector<BehaviorTree::IndexType>& node_hierarchy) {
-    BehaviorTree::IndexType child_index = node_hierarchy[0];
-    BehaviorTree::NodeData child_node_data = bt_structure_data[child_index];
+void BTRootNode::remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
+    node_hierarchy.push_back(0);
+    BehaviorTree::NodeData child_node_data = child.get_bt_node_data();
     BehaviorTree::IndexType children_count = child_node_data.end - child_node_data.begin;
 
     int old_size = bt_structure_data.size();
@@ -66,8 +67,7 @@ void BTRootNode::remove_child_node(Vector<BehaviorTree::IndexType>& node_hierarc
     bt_node_list.resize(new_size);
 
     int parents_count = node_hierarchy.size();
-    // first one is child itself.
-    for (int i = 1; i < parents_count; ++i) {
+    for (int i = 0; i < parents_count; ++i) {
         bt_structure_data[node_hierarchy[i]].end -= children_count;
     }
 }

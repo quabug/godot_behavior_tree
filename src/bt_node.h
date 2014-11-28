@@ -8,17 +8,17 @@ class BTNode : public Node
 {
     OBJ_TYPE(BTNode, Node);
 
-    BehaviorTree::IndexType bt_index;
+    BehaviorTree::NodeData bt_node_data;
 
 public:
     virtual BehaviorTree::Node* get_behavior_node() = 0;
 
-    virtual void add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) = 0;
-    virtual void remove_child_node(Vector<BehaviorTree::IndexType>& node_hierarchy) = 0;
+    virtual void add_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) = 0;
+    virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) = 0;
     //virtual void move_child_node(BTNode &child, int pos, Vector<BehaviorTree::IndexType> node_hierarchy) = 0;
 
-    inline BehaviorTree::IndexType get_bt_index() const { return bt_index; }
-    inline void set_bt_index(BehaviorTree::IndexType index) { bt_index = index; }
+    inline BehaviorTree::NodeData get_bt_node_data() const { return bt_node_data; }
+    inline void set_bt_node_data(BehaviorTree::NodeData node_data) { bt_node_data = node_data; }
 
 protected:
     Variant script_call(StringName method, void* context);

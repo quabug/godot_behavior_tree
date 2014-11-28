@@ -5,7 +5,6 @@ using namespace BehaviorTree;
 
 static void create_structure_impl(BTStructure& structure_data, NodeList& node_list, BTNode& node, int& index) {
     BT_ASSERT(index < INDEX_TYPE_MAX);
-    node.set_bt_index(static_cast<IndexType>(index));
     node_list.push_back(node.get_behavior_node());
     NodeData node_data;
     node_data.begin = index++;
@@ -18,6 +17,7 @@ static void create_structure_impl(BTStructure& structure_data, NodeList& node_li
             create_structure_impl(structure_data, node_list, *p_bt_node, index);
     }
     current_node_data.end = index;
+    node.set_bt_node_data(current_node_data);
 }
 
 void create_bt_structure(BTStructure& structure_data, NodeList& node_list, BTNode& node, int begin) {

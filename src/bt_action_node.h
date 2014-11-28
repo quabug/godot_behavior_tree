@@ -7,8 +7,8 @@ class BTActionNode : public BTNode
 {
     OBJ_TYPE(BTActionNode, BTNode);
 
-    virtual void add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
-    virtual void remove_child_node(Vector<BehaviorTree::IndexType>& node_hierarchy) override;
+    virtual void add_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
+    virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
 
     struct Adapter : public BehaviorTree::Action
     {

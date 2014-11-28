@@ -10,20 +10,20 @@ void BTDecoratorNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexTy
 	ERR_EXPLAIN("Parent node is not a BTNode.");
 	ERR_FAIL_NULL(p_parent);
 	ERR_EXPLAIN("Decorator node only allowed one child.");
-	ERR_FAIL_COND(get_child_count() > 0);
+	ERR_FAIL_COND(get_child_count() > 1);
     if (p_parent && get_child_count() == 0) {
-        node_hierarchy.push_back(get_bt_index());
+        node_hierarchy.push_back(get_bt_node_data().index);
         p_parent->add_child_node(child, node_hierarchy);
     }
 }
 
-void BTDecoratorNode::remove_child_node(Vector<BehaviorTree::IndexType>& node_hierarchy) {
+void BTDecoratorNode::remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
     BTNode* p_parent = get_parent() ? get_parent()->cast_to<BTNode>() : NULL;
-	ERR_EXPLAIN("Parent node is not a BTNode.");
-	ERR_FAIL_NULL(p_parent);
+	//ERR_EXPLAIN("Parent node is not a BTNode.");
+	//ERR_FAIL_NULL(p_parent);
     if (p_parent) {
-        node_hierarchy.push_back(get_bt_index());
-        p_parent->remove_child_node(node_hierarchy);
+        node_hierarchy.push_back(get_bt_node_data().index);
+        p_parent->remove_child_node(child, node_hierarchy);
     }
 }
 

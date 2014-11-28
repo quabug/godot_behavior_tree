@@ -11,7 +11,7 @@ void BTActionNode::add_child_node(BTNode &, Vector<BehaviorTree::IndexType>& ) {
 	ERR_FAIL();
 }
 
-void BTActionNode::remove_child_node(Vector<BehaviorTree::IndexType>& ) {
+void BTActionNode::remove_child_node(BTNode&, Vector<BehaviorTree::IndexType>& ) {
 	//ERR_EXPLAIN("Action node doesn't allow to have any child.");
 	//ERR_FAIL();
 }
