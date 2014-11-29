@@ -27,8 +27,12 @@ class BTActionNode : public BTNode
 
     BehaviorTree::Node* get_behavior_node() { return &adapter; }
 
+
 public:
     BTActionNode();
+
+protected:
+    static void _bind_methods();
 };
 
 

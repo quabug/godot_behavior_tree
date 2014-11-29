@@ -29,6 +29,9 @@ class BTDecoratorNode : public BTNode
 
 public:
     BTDecoratorNode();
+
+protected:
+    static void _bind_methods();
 };
 
 #endif

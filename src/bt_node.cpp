@@ -32,14 +32,8 @@ void BTNode::remove_child_notify(Node *p_child) {
     }
 }
 
-Variant BTNode::script_call(StringName method, void* context) {
-    Variant result;
-    ERR_EXPLAIN("Context cannot be null");
-    ERR_FAIL_NULL_V( context, result );
-    if (get_script_instance()) {
-        const Variant* ptr[1]={ static_cast<Variant*>(context) };
-        // NOTE: what's the difference between call_multilevel and call?
-        result = get_script_instance()->call(method,ptr,1);
-    }
-    return result;
+void BTNode::_bind_methods() {
+	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_SUCCESS", BehaviorTree::BH_SUCCESS);
+	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_FAILURE", BehaviorTree::BH_FAILURE);
+	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_RUNNING", BehaviorTree::BH_RUNNING);
 }

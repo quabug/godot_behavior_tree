@@ -30,23 +30,27 @@ void tick(const BTStructure& bt_structure, NodeList& node_list, VMRunningData& r
     size_t num_nodes = bt_structure.size();
     BT_ASSERT(bt_structure.size() == node_list.size());
     while (running_data.index_marker < num_nodes) {
-        NodeData node_data = bt_structure[running_data.index_marker];
-        Node* node = node_list[running_data.index_marker];
-        E_State state = run_action(running_data, node, context);
-        BT_ASSERT(running_data.index_marker <= node_data.end);
-        if (running_data.index_marker < node_data.end) {
-            // this node should be a composite or a decorator
-            BT_ASSERT(state == BH_RUNNING);
-            add_running_node(running_data, node, node_data);
-        } else {
-            if (state == BH_RUNNING) {
-                running_data.this_tick_running.push_back(node_data.index);
-            }
-            run_composites(running_data, state, context);
-        }
-        cancel_skipped_behaviors(node_list, running_data, context);
+        step_forward(bt_structure, node_list, running_data, context);
     }
     tick_end(running_data);
+}
+
+void step_forward(const BTStructure& bt_structure, NodeList& node_list, VMRunningData& running_data, void* context) {
+    NodeData node_data = bt_structure[running_data.index_marker];
+    Node* node = node_list[running_data.index_marker];
+    E_State state = run_action(running_data, node, context);
+    BT_ASSERT(running_data.index_marker <= node_data.end);
+    if (running_data.index_marker < node_data.end) {
+        // this node should be a composite or a decorator
+        BT_ASSERT(state == BH_RUNNING);
+        add_running_node(running_data, node, node_data);
+    } else {
+        if (state == BH_RUNNING) {
+            running_data.this_tick_running.push_back(node_data.index);
+        }
+        run_composites(running_data, state, context);
+    }
+    cancel_skipped_behaviors(node_list, running_data, context);
 }
 
 namespace

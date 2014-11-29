@@ -21,9 +21,7 @@ public:
     inline void set_bt_node_data(BehaviorTree::NodeData node_data) { bt_node_data = node_data; }
 
 protected:
-    Variant script_call(StringName method, void* context);
-
-    static void _bind_methods() {}
+    static void _bind_methods();
 
 private:
     virtual void add_child_notify(Node *p_child) override;

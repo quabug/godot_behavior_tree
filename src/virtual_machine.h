@@ -35,9 +35,12 @@ struct VMStructureData
     NodeList node_list;
 };
 
-// helper functions related to VMRunningData
+// helper functions related to VMStructureData
+// execute the whole behavior tree.
 void tick(VMStructureData& structure_data, VMRunningData& running_data, void* context);
 void tick(const BTStructure& bt_structure, NodeList& node_list, VMRunningData& running_data, void* context);
+// running behavior tree step by step.
+void step_forward(const BTStructure& bt_structure, NodeList& node_list, VMRunningData& running_data, void* context);
 
 } /* BehaviorTree */ 
 

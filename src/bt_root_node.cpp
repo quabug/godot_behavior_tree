@@ -12,6 +12,29 @@ BTRootNode::BTRootNode()
     bt_node_list.push_back(&behavior_node);
 }
 
+void BTRootNode::_notification(int p_notification) {
+    
+    switch(p_notification) {
+
+        case NOTIFICATION_PROCESS: {
+
+            Variant context;
+            if (get_script_instance()) {
+
+                Variant time=get_process_delta_time();
+                const Variant*ptr[1]={&time};
+                Variant::CallError err;
+                context = get_script_instance()->call("_pre_tick",ptr,1,err);
+            }
+            tick(bt_structure_data, bt_node_list, bt_running_data, &context);
+        } break;
+    }
+}
+
+void BTRootNode::_bind_methods() {
+	BIND_VMETHOD( MethodInfo("_pre_tick",PropertyInfo(Variant::REAL,"delta")) );
+}
+
 void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
     node_hierarchy.push_back(0);
     BehaviorTree::VMStructureData temp_vm_structure_data;
