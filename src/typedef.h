@@ -25,7 +25,7 @@ namespace BehaviorTree { struct Node; }
 namespace BehaviorTree
 {
     
-enum E_State { BH_READY, BH_SUCCESS, BH_FAILURE, BH_RUNNING };
+enum E_State { BH_ERROR, BH_SUCCESS, BH_FAILURE, BH_RUNNING };
 
 typedef unsigned short IndexType;
 const IndexType INDEX_TYPE_MAX = 0xffff;
@@ -54,7 +54,7 @@ public:
 };
 
 template<typename COMPARATOR, typename T>
-void sort(BTVector<T>& vector) { vector.template sort_custom<COMPARATOR>(); }
+void sort(BTVector<T>& vector) { vector.sort_custom<COMPARATOR>(); }
 
 #else
 

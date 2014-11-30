@@ -37,11 +37,12 @@ void BTRootNode::_bind_methods() {
 
 void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
     node_hierarchy.push_back(0);
-    BehaviorTree::VMStructureData temp_vm_structure_data;
+    BehaviorTree::BTStructure temp_bt_structure_data;
+    BehaviorTree::NodeList temp_bt_node_list;
     // add new child at the end of its parent.
     int child_index = bt_structure_data[node_hierarchy[0]].end;
-    create_bt_structure(temp_vm_structure_data, child, child_index);
-    BehaviorTree::IndexType children_count = temp_vm_structure_data.node_list.size();
+    create_bt_structure(temp_bt_structure_data, temp_bt_node_list, child, child_index);
+    BehaviorTree::IndexType children_count = temp_bt_node_list.size();
 
     int old_size = bt_structure_data.size();
     int new_size = old_size + children_count;
@@ -59,9 +60,9 @@ void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& 
 
     for (int i = 0; i < children_count; ++i) {
         ERR_EXPLAIN("Index of child is not correct.");
-        ERR_FAIL_COND(child_index+i != temp_vm_structure_data.data_list[i].index);
-        bt_structure_data[child_index+i] = temp_vm_structure_data.data_list[i];
-        bt_node_list[child_index+i] = temp_vm_structure_data.node_list[i];
+        ERR_FAIL_COND(child_index+i != temp_bt_structure_data[i].index);
+        bt_structure_data[child_index+i] = temp_bt_structure_data[i];
+        bt_node_list[child_index+i] = temp_bt_node_list[i];
     }
 
     int parents_count = node_hierarchy.size();

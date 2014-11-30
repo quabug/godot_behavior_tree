@@ -25,7 +25,3 @@ void create_bt_structure(BTStructure& structure_data, NodeList& node_list, BTNod
     node_list.clear();
     create_structure_impl(structure_data, node_list, node, begin);
 }
-
-void create_bt_structure(VMStructureData& vm_structure, BTNode& node, int begin) {
-    create_bt_structure(vm_structure.data_list, vm_structure.node_list, node, begin);
-}

@@ -3,7 +3,7 @@
 
 #include "typedef.h"
 
-namespace BehaviorTree { struct VMRunningData; }
+namespace BehaviorTree { class VirtualMachine; }
 
 namespace BehaviorTree
 {
@@ -12,43 +12,39 @@ struct Node
 {
     virtual ~Node() {}
 
-    virtual void prepare(VMRunningData& , IndexType, void* ) = 0;
-    virtual E_State self_update(VMRunningData& , IndexType, void*, E_State init_state) = 0;
-    virtual E_State child_update(VMRunningData& , IndexType, void* , E_State child_state) = 0;
-    virtual void abort(VMRunningData& , IndexType, void* ) = 0;
+    virtual void restore_running(VirtualMachine& , IndexType, void* ) = 0;
+    virtual void prepare(VirtualMachine& , IndexType, void* ) = 0;
+
+    virtual E_State self_update(VirtualMachine& , IndexType, void*) = 0;
+    virtual E_State child_update(VirtualMachine& , IndexType, void* , E_State child_state) = 0;
+
+    virtual void abort(VirtualMachine& , IndexType, void* ) = 0;
 };
 
-class NodeImpl : public Node
+class NodeImpl : protected Node
 {
 protected:
-    virtual void prepare(VMRunningData& , IndexType, void* ) override {}
-    virtual void abort(VMRunningData& , IndexType, void* ) override {}
+    virtual void restore_running(VirtualMachine& , IndexType, void* ) override;
+    virtual void prepare(VirtualMachine& , IndexType, void* ) override;
+    virtual void abort(VirtualMachine& , IndexType, void* ) override;
+    virtual E_State self_update(VirtualMachine& , IndexType, void*) override;
+    virtual E_State child_update(VirtualMachine& , IndexType, void* , E_State ) override;
 };
 
-class Composite : public NodeImpl
+class Action : protected NodeImpl
 {
-    virtual void init(VMRunningData& running_data, IndexType index, E_State init_state) = 0;
 protected:
-    virtual E_State self_update(VMRunningData& running_data, IndexType index, void*, E_State init_state) override {
-        init(running_data, index, init_state);
-        return BH_RUNNING;
-    }
+    virtual E_State self_update(VirtualMachine&, IndexType index, void* context) override;
+    virtual E_State update(void*);
 };
 
-class Decorator : public NodeImpl
+class Decorator : protected NodeImpl
 {
-    virtual E_State update(IndexType, void*, E_State child_state) = 0;
 protected:
-    virtual E_State self_update(VMRunningData& running_data, IndexType index, void*, E_State init_state) override;
-    virtual E_State child_update(VMRunningData& running_data, IndexType index, void*, E_State child_state) override;
-};
-
-class Action : public NodeImpl
-{
-    virtual E_State update(IndexType, void*) = 0;
-protected:
-    virtual E_State self_update(VMRunningData&, IndexType, void*, E_State) override;
-    virtual E_State child_update(VMRunningData&, IndexType, void*, E_State) override;
+    virtual E_State self_update(VirtualMachine&, IndexType, void* context) override;
+    virtual E_State child_update(VirtualMachine&, IndexType , void* context, E_State child_state) override;
+    virtual E_State pre_update(void*);
+    virtual E_State post_update(void*, E_State child_state);
 };
 
 } /* BehaviorTree */ 

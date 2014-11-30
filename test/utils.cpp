@@ -1,22 +1,22 @@
 #include "utils.h"
 
-static void to_vm_impl(VMStructureData& vm, ConstructNode& node, IndexType& index) {
-    vm.node_list.push_back(node.node);
+static void to_vm_impl(BTStructure& structure_data, NodeList& node_list, ConstructNode& node, IndexType& index) {
+    node_list.push_back(node.node);
     NodeData node_data;
     node_data.begin = index++;
-    vm.data_list.push_back(node_data);
+    structure_data.push_back(node_data);
     for (ConstructNode& child : node.children)
-        to_vm_impl(vm, child, index);
-    vm.data_list[node_data.index].end = index;
+        to_vm_impl(structure_data, node_list, child, index);
+    structure_data[node_data.index].end = index;
 }
 
-void to_vm(VMStructureData& vm, ConstructNode& node) {
-    vm.data_list.clear();
+void to_vm(BTStructure& structure_data, NodeList& node_list, ConstructNode& node) {
+    structure_data.clear();
     IndexType index = 0;
-    to_vm_impl(vm, node, index);
+    to_vm_impl(structure_data, node_list, node, index);
 }
 
-void tick_vm(VMStructureData& vm, VMRunningData& data, MockAgent& agent) {
+void tick_vm(VirtualMachine& vm, MockAgent& agent) {
     agent.reset();
-    tick(vm, data, &agent);
+    vm.tick(&agent);
 }

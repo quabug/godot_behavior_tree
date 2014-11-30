@@ -39,14 +39,14 @@ struct MockAgent
             data.counter.child_update = 0;
             data.counter.abort = 0;
             data.counter.prepare = 0;
-            data.self_update_result = BH_READY;
-            data.child_update_result = BH_READY;
+            data.self_update_result = BH_ERROR;
+            data.child_update_result = BH_ERROR;
         }
     }
 };
 
-void to_vm(VMStructureData& vm, ConstructNode& node);
-void tick_vm(VMStructureData& vm, VMRunningData& data, MockAgent& agent);
+void to_vm(BTStructure& structure_data, NodeList& node_list, ConstructNode& node);
+void tick_vm(VirtualMachine& vm, MockAgent& agent);
 
 template<typename T>
 struct MockNode : public T
@@ -55,29 +55,29 @@ struct MockNode : public T
 
     MockNode() { inner_node.node = this; }
 
-    virtual void prepare(VMRunningData& vm, IndexType index, void* context) override {
+    virtual void prepare(VirtualMachine& vm, IndexType index, void* context) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.prepare;
         T::prepare(vm, index, context);
     }
 
-    virtual void abort(VMRunningData& vm, IndexType index, void* context) override {
+    virtual void abort(VirtualMachine& vm, IndexType index, void* context) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.abort;
         T::abort(vm, index, context);
     }
 
-    virtual E_State self_update(VMRunningData& vm, IndexType index, void* context, E_State state) override {
+    virtual E_State self_update(VirtualMachine& vm, IndexType index, void* context) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.self_update;
-        node_data.self_update_result = T::self_update(vm, index, context, state);
+        node_data.self_update_result = T::self_update(vm, index, context);
         return node_data.self_update_result;
     }
 
-    virtual E_State child_update(VMRunningData& vm, IndexType index, void* context, E_State child_state) override {
+    virtual E_State child_update(VirtualMachine& vm, IndexType index, void* context, E_State child_state) override {
         MockAgent* agent = static_cast<MockAgent*>(context);
         MockAgent::NodeData& node_data = agent->data_list[index];
         ++node_data.counter.child_update;
@@ -92,18 +92,12 @@ struct MockAction : public MockNode<Action>
     MockAction() : update_result(BH_SUCCESS) {}
     MockAction(E_State result) : update_result(result) {}
 
-    virtual E_State update(IndexType, void*) override {
+    virtual E_State update(void*) override {
         return update_result;
     }
 };
 
-struct MockDecorator : public MockNode<Decorator>
-{
-    virtual E_State update(IndexType, void*, E_State child_state) {
-        return child_state;
-    }
-};
-
+struct MockDecorator : public MockNode<Decorator> {};
 struct MockSelector : public MockNode<Selector> {};
 struct MockSequence : public MockNode<Sequence> {};
 struct MockParallel : public MockNode<Parallel<BH_SUCCESS> > {};
