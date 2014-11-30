@@ -21,7 +21,7 @@ struct Node
     virtual void abort(VirtualMachine& , IndexType, void* ) = 0;
 };
 
-class NodeImpl : protected Node
+class NodeImpl : public Node
 {
 protected:
     virtual void restore_running(VirtualMachine& , IndexType, void* ) override;
@@ -31,14 +31,14 @@ protected:
     virtual E_State child_update(VirtualMachine& , IndexType, void* , E_State ) override;
 };
 
-class Action : protected NodeImpl
+class Action : public NodeImpl
 {
 protected:
     virtual E_State self_update(VirtualMachine&, IndexType index, void* context) override;
     virtual E_State update(void*);
 };
 
-class Decorator : protected NodeImpl
+class Decorator : public NodeImpl
 {
 protected:
     virtual E_State self_update(VirtualMachine&, IndexType, void* context) override;

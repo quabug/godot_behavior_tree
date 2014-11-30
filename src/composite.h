@@ -6,19 +6,19 @@
 namespace BehaviorTree
 {
 
-class Composite : protected NodeImpl
+class Composite : public NodeImpl
 {
 protected:
     virtual E_State self_update(VirtualMachine& , IndexType , void*) override;
 };
 
-class Selector : protected Composite
+class Selector : public Composite
 {
 protected:
     virtual E_State child_update(VirtualMachine& vm, IndexType index, void*, E_State child_state) override;
 };
 
-class Sequence : protected Composite
+class Sequence : public Composite
 {
 protected:
     virtual void restore_running(VirtualMachine& vm, IndexType index, void* context) override;
@@ -28,7 +28,7 @@ protected:
 // instead of running children nodes in seperated thread,
 // we run chilren nodes step by step without interruption.
 template<E_State RESULT_STATE = BH_SUCCESS>
-class Parallel : protected Composite
+class Parallel : public Composite
 {
 public:
     Parallel() {
