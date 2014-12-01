@@ -2,6 +2,7 @@
 #define BT_DECORATOR_NODE_H
 
 #include "bt_node.h"
+#include "bt_behavior_delegate.h"
 
 class BTDecoratorNode : public BTNode
 {
@@ -10,32 +11,29 @@ class BTDecoratorNode : public BTNode
     virtual void add_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
     
-    struct Adapter : public BehaviorTree::Decorator
+    struct Delegate : public BehaviorDelegate<BehaviorTree::Decorator>
     {
-        BTDecoratorNode& node;
-        Adapter(BTDecoratorNode& node_):node(node_) {}
+        typedef BehaviorDelegate<BehaviorTree::Decorator> super;
 
-        virtual void restore_running(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType index, void* context) override;
-        virtual void prepare(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType index, void* context) override;
+        Delegate(BTNode& node_):super(node_) {}
+
+        virtual void restore_running(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) override;
+        virtual void prepare(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) override;
+
         virtual BehaviorTree::E_State pre_update(BehaviorTree::IndexType, void*) override;
         virtual BehaviorTree::E_State post_update(BehaviorTree::IndexType, void*, BehaviorTree::E_State child_state) override;
-        virtual void abort(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType, void* ) override;
-    };
-    Adapter adapter;
 
-    void bt_restore_running(BehaviorTree::IndexType index, void* context);
-    void bt_prepare(BehaviorTree::IndexType index, void* context);
-    void bt_abort(BehaviorTree::IndexType index, void* context);
-    BehaviorTree::E_State bt_pre_update(BehaviorTree::IndexType index, void* context);
-    BehaviorTree::E_State bt_post_update(BehaviorTree::IndexType index, void* context, BehaviorTree::E_State child_state);
+        virtual void abort(BehaviorTree::VirtualMachine& , BehaviorTree::IndexType, void* ) override;
+    };
+    Delegate delegate;
 
 public:
     BTDecoratorNode();
 
 protected:
-    static void _bind_methods();
+    BehaviorTree::Node* get_behavior_node() { return &delegate; }
 
-    BehaviorTree::Node* get_behavior_node() { return &adapter; }
+    static void _bind_methods();
 };
 
 #endif

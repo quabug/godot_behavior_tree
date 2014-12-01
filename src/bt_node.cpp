@@ -36,4 +36,5 @@ void BTNode::_bind_methods() {
 	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_SUCCESS", BehaviorTree::BH_SUCCESS);
 	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_FAILURE", BehaviorTree::BH_FAILURE);
 	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_RUNNING", BehaviorTree::BH_RUNNING);
+	ObjectTypeDB::bind_integer_constant( get_type_static() , "BH_ERROR", BehaviorTree::BH_ERROR);
 }

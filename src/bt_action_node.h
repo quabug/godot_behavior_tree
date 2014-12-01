@@ -2,6 +2,7 @@
 #define BT_ACTION_NODE_H
 
 #include "bt_node.h"
+#include "bt_behavior_delegate.h"
 
 class BTActionNode : public BTNode
 {
@@ -10,25 +11,20 @@ class BTActionNode : public BTNode
     virtual void add_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
 
-    struct Adapter : public BehaviorTree::Action
+    struct Delegate : public BehaviorDelegate<BehaviorTree::Action>
     {
-        BTActionNode& node;
-        Adapter(BTActionNode& node_):node(node_) {}
+        typedef BehaviorDelegate<BehaviorTree::Action> super;
 
-        virtual void restore_running(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType index, void* context) override;
-        virtual void prepare(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType index, void* context) override;
+        Delegate(BTActionNode& node_):super(node_) {}
+
+        virtual void restore_running(BehaviorTree::VirtualMachine& , BehaviorTree::IndexType index, void* context) override;
+        virtual void prepare(BehaviorTree::VirtualMachine& , BehaviorTree::IndexType index, void* context) override;
         virtual BehaviorTree::E_State update(BehaviorTree::IndexType, void*) override;
-        virtual void abort(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType, void* ) override;
+        virtual void abort(BehaviorTree::VirtualMachine& , BehaviorTree::IndexType, void* ) override;
     };
-    Adapter adapter;
+    Delegate delegate;
 
-    void bt_restore_running(BehaviorTree::IndexType, void* context);
-    void bt_prepare(BehaviorTree::IndexType, void* context);
-    void bt_abort(BehaviorTree::IndexType, void* context);
-    BehaviorTree::E_State bt_update(BehaviorTree::IndexType, void* context);
-
-    BehaviorTree::Node* get_behavior_node() { return &adapter; }
-
+    BehaviorTree::Node* get_behavior_node() { return &delegate; }
 
 public:
     BTActionNode();

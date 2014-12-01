@@ -18,12 +18,10 @@ void BTRootNode::_notification(int p_notification) {
     switch(p_notification) {
 
         case NOTIFICATION_READY: {
-
-            if (get_script_instance()) {
-
-                const Variant*ptr[0]={};
+            ScriptInstance* script = get_script_instance();
+            if (script && script->has_method("_create_context")) {
                 Variant::CallError err;
-                context = get_script_instance()->call("_create_context",ptr,0,err);
+                context = script->call("_create_context",NULL,0,err);
             }
         } break;
 

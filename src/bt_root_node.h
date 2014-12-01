@@ -2,7 +2,6 @@
 #define BT_ROOT_NODE
 
 #include "bt_decorator_node.h"
-#include "composite.h"
 
 class BTRootNode : public BTDecoratorNode
 {
@@ -12,7 +11,6 @@ class BTRootNode : public BTDecoratorNode
     BehaviorTree::NodeList bt_node_list;
     BehaviorTree::VMRunningData bt_running_data;
     BehaviorTree::VirtualMachine vm;
-
     Variant context;
 
 	void _notification(int p_notification);	

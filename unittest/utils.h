@@ -92,7 +92,7 @@ struct MockAction : public MockNode<Action>
     MockAction() : update_result(BH_SUCCESS) {}
     MockAction(E_State result) : update_result(result) {}
 
-    virtual E_State update(void*) override {
+    virtual E_State update(IndexType, void*) override {
         return update_result;
     }
 };
