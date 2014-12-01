@@ -35,7 +35,7 @@ class Action : public NodeImpl
 {
 protected:
     virtual E_State self_update(VirtualMachine&, IndexType index, void* context) override;
-    virtual E_State update(void*);
+    virtual E_State update(IndexType, void*);
 };
 
 class Decorator : public NodeImpl
@@ -43,8 +43,8 @@ class Decorator : public NodeImpl
 protected:
     virtual E_State self_update(VirtualMachine&, IndexType, void* context) override;
     virtual E_State child_update(VirtualMachine&, IndexType , void* context, E_State child_state) override;
-    virtual E_State pre_update(void*);
-    virtual E_State post_update(void*, E_State child_state);
+    virtual E_State pre_update(IndexType, void*);
+    virtual E_State post_update(IndexType, void*, E_State child_state);
 };
 
 } /* BehaviorTree */ 

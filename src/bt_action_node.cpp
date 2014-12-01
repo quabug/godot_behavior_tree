@@ -7,9 +7,10 @@ BTActionNode::BTActionNode()
 }
 
 void BTActionNode::_bind_methods() {
-	BIND_VMETHOD( MethodInfo("_bt_prepare",PropertyInfo(Variant::NIL,"context")) );
-	BIND_VMETHOD( MethodInfo("_bt_update",PropertyInfo(Variant::NIL,"context")) );
-	BIND_VMETHOD( MethodInfo("_bt_abort",PropertyInfo(Variant::NIL,"context")) );
+	BIND_VMETHOD( MethodInfo("_bt_restore_running", PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
+	BIND_VMETHOD( MethodInfo("_bt_prepare", PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
+	BIND_VMETHOD( MethodInfo("_bt_update", PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
+	BIND_VMETHOD( MethodInfo("_bt_abort", PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 }
 
 void BTActionNode::add_child_node(BTNode &, Vector<BehaviorTree::IndexType>& ) {
@@ -23,50 +24,71 @@ void BTActionNode::remove_child_node(BTNode&, Vector<BehaviorTree::IndexType>& )
 }
 
 
-void BTActionNode::bt_prepare(void* context) {
+void BTActionNode::bt_restore_running(BehaviorTree::IndexType index, void* context) {
     ERR_EXPLAIN("Context cannot be null");
     ERR_FAIL_NULL( context );
     if (get_script_instance()) {
-        const Variant* ptr[1]={ static_cast<Variant*>(context) };
+        Variant index_var(index);
+        const Variant* ptr[2]={ &index_var, static_cast<Variant*>(context) };
         Variant::CallError err;
-        get_script_instance()->call("_bt_prepare",ptr,1,err);
+        get_script_instance()->call("_bt_restore_running",ptr,2,err);
     }
 }
 
-void BTActionNode::bt_abort(void* context) {
+void BTActionNode::bt_prepare(BehaviorTree::IndexType index, void* context) {
     ERR_EXPLAIN("Context cannot be null");
     ERR_FAIL_NULL( context );
     if (get_script_instance()) {
-        const Variant* ptr[1]={ static_cast<Variant*>(context) };
+        Variant index_var(index);
+        const Variant* ptr[2]={ &index_var, static_cast<Variant*>(context) };
         Variant::CallError err;
-        get_script_instance()->call("_bt_abort",ptr,1,err);
+        get_script_instance()->call("_bt_prepare",ptr,2,err);
     }
 }
 
-BehaviorTree::E_State BTActionNode::bt_update(void* context) {
+void BTActionNode::bt_abort(BehaviorTree::IndexType index, void* context) {
     ERR_EXPLAIN("Context cannot be null");
-    ERR_FAIL_NULL_V( context, BehaviorTree::BH_READY );
-    Variant v;
+    ERR_FAIL_NULL( context );
     if (get_script_instance()) {
-        const Variant* ptr[1]={ static_cast<Variant*>(context) };
+        Variant index_var(index);
+        const Variant* ptr[2]={ &index_var, static_cast<Variant*>(context) };
         Variant::CallError err;
-        v = get_script_instance()->call("_bt_update",ptr,1,err);
+        get_script_instance()->call("_bt_abort",ptr,2,err);
     }
-    return BehaviorTree::BH_SUCCESS;
-    //ERR_EXPLAIN("Variant type is not int.");
-    //ERR_FAIL_COND_V( v.get_type() != Variant::INT, BehaviorTree::BH_READY );
-    //return static_cast<BehaviorTree::E_State>(static_cast<int>(v));
 }
 
-void BTActionNode::Adapter::prepare(BehaviorTree::VMRunningData&, BehaviorTree::IndexType, void* context) {
-    node.bt_prepare(context);
+BehaviorTree::E_State BTActionNode::bt_update(BehaviorTree::IndexType index, void* context) {
+    ERR_EXPLAIN("Context cannot be null");
+    ERR_FAIL_NULL_V( context, BehaviorTree::BH_ERROR );
+    Variant v(BehaviorTree::BH_SUCCESS);
+    ScriptInstance* script = get_script_instance();
+    if (script && script->has_method("_bt_update")) {
+        Variant index_var(index);
+        const Variant* ptr[2]={ &index_var, static_cast<Variant*>(context) };
+        Variant::CallError err;
+        v = script->call("_bt_update",ptr,2,err);
+        ERR_EXPLAIN("Variant type is not int.");
+        ERR_FAIL_COND_V( v.get_type() != Variant::INT, BehaviorTree::BH_ERROR );
+    }
+    return static_cast<BehaviorTree::E_State>(static_cast<int>(v));
 }
 
-BehaviorTree::E_State BTActionNode::Adapter::update(BehaviorTree::IndexType, void* context) {
-    return node.bt_update(context);
+void BTActionNode::Adapter::restore_running(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
+    BehaviorTree::Action::restore_running(vm, index, context);
+    node.bt_restore_running(index, context);
 }
 
-void BTActionNode::Adapter::abort(BehaviorTree::VMRunningData& , BehaviorTree::IndexType , void* context) {
-    node.bt_abort(context);
+void BTActionNode::Adapter::prepare(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
+    BehaviorTree::Action::prepare(vm, index, context);
+    node.bt_prepare(index, context);
+}
+
+BehaviorTree::E_State BTActionNode::Adapter::update(BehaviorTree::IndexType index, void* context) {
+    return node.bt_update(index, context);
+}
+
+void BTActionNode::Adapter::abort(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
+    BehaviorTree::Action::abort(vm, index, context);
+    node.bt_abort(index, context);
 }
 

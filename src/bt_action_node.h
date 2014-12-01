@@ -15,15 +15,17 @@ class BTActionNode : public BTNode
         BTActionNode& node;
         Adapter(BTActionNode& node_):node(node_) {}
 
-        virtual void prepare(BehaviorTree::VMRunningData& running_data, BehaviorTree::IndexType index, void* context) override;
+        virtual void restore_running(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType index, void* context) override;
+        virtual void prepare(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType index, void* context) override;
         virtual BehaviorTree::E_State update(BehaviorTree::IndexType, void*) override;
-        virtual void abort(BehaviorTree::VMRunningData& , BehaviorTree::IndexType, void* ) override;
+        virtual void abort(BehaviorTree::VirtualMachine&, BehaviorTree::IndexType, void* ) override;
     };
     Adapter adapter;
 
-    void bt_prepare(void* context);
-    void bt_abort(void* context);
-    BehaviorTree::E_State bt_update(void* context);
+    void bt_restore_running(BehaviorTree::IndexType, void* context);
+    void bt_prepare(BehaviorTree::IndexType, void* context);
+    void bt_abort(BehaviorTree::IndexType, void* context);
+    BehaviorTree::E_State bt_update(BehaviorTree::IndexType, void* context);
 
     BehaviorTree::Node* get_behavior_node() { return &adapter; }
 

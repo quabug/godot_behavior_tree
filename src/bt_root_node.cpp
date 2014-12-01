@@ -3,36 +3,38 @@
 
 
 BTRootNode::BTRootNode()
+    : vm(bt_running_data, bt_node_list, bt_structure_data)
 {
     BehaviorTree::NodeData node_data;
     node_data.begin = 0;
     node_data.end = 1;
     set_bt_node_data(node_data);
     bt_structure_data.push_back(node_data);
-    bt_node_list.push_back(&behavior_node);
+    bt_node_list.push_back(get_behavior_node());
 }
 
 void BTRootNode::_notification(int p_notification) {
     
     switch(p_notification) {
 
-        case NOTIFICATION_PROCESS: {
+        case NOTIFICATION_READY: {
 
-            Variant context;
             if (get_script_instance()) {
 
-                Variant time=get_process_delta_time();
-                const Variant*ptr[1]={&time};
+                const Variant*ptr[0]={};
                 Variant::CallError err;
-                context = get_script_instance()->call("_pre_tick",ptr,1,err);
+                context = get_script_instance()->call("_create_context",ptr,0,err);
             }
-            tick(bt_structure_data, bt_node_list, bt_running_data, &context);
+        } break;
+
+        case NOTIFICATION_PROCESS: {
+            vm.tick(&context);
         } break;
     }
 }
 
 void BTRootNode::_bind_methods() {
-	BIND_VMETHOD( MethodInfo("_pre_tick",PropertyInfo(Variant::REAL,"delta")) );
+	BIND_VMETHOD( MethodInfo("_create_context") );
 }
 
 void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {

@@ -32,7 +32,7 @@ class Parallel : public Composite
 {
 public:
     Parallel() {
-        BT_STATIC_ASSERT(RESULT_STATE != BH_ERROR, "RESULT_STATE cannot be BH_READY");
+        BT_STATIC_ASSERT(RESULT_STATE != BH_ERROR, "RESULT_STATE cannot be BH_ERROR");
     }
 
 protected:

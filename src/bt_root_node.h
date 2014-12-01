@@ -1,23 +1,21 @@
 #ifndef BT_ROOT_NODE
 #define BT_ROOT_NODE
 
-#include "bt_node.h"
+#include "bt_decorator_node.h"
 #include "composite.h"
 
-class BTRootNode : public BTNode
+class BTRootNode : public BTDecoratorNode
 {
-    OBJ_TYPE(BTRootNode, BTNode);
+    OBJ_TYPE(BTRootNode, BTDecoratorNode);
 
     BehaviorTree::BTStructure bt_structure_data;
     BehaviorTree::NodeList bt_node_list;
     BehaviorTree::VMRunningData bt_running_data;
+    BehaviorTree::VirtualMachine vm;
 
-    BehaviorTree::Parallel<BehaviorTree::BH_SUCCESS> behavior_node;
-    virtual BehaviorTree::Node* get_behavior_node() override { return &behavior_node; }
+    Variant context;
 
 	void _notification(int p_notification);	
-
-    //void _set_context(const Variant& context) { this->context = context; }
 
 public:
     BTRootNode();
