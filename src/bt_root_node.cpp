@@ -1,7 +1,6 @@
 #include "bt_root_node.h"
 #include "bt_utils.h"
 
-
 BTRootNode::BTRootNode()
     : vm(bt_running_data, bt_node_list, bt_structure_data)
 {
@@ -13,26 +12,11 @@ BTRootNode::BTRootNode()
     bt_node_list.push_back(get_behavior_node());
 }
 
-void BTRootNode::_notification(int p_notification) {
-    
-    switch(p_notification) {
-
-        case NOTIFICATION_READY: {
-            ScriptInstance* script = get_script_instance();
-            if (script && script->has_method("_create_context")) {
-                Variant::CallError err;
-                context = script->call("_create_context",NULL,0,err);
-            }
-        } break;
-
-        case NOTIFICATION_PROCESS: {
-            vm.tick(&context);
-        } break;
-    }
-}
-
 void BTRootNode::_bind_methods() {
-	BIND_VMETHOD( MethodInfo("_create_context") );
+	ObjectTypeDB::bind_method(_MD("set_context", "context"), &BTRootNode::set_context);
+	ObjectTypeDB::bind_method(_MD("get_context"), &BTRootNode::get_context);
+	ObjectTypeDB::bind_method(_MD("tick"), &BTRootNode::tick);
+	ObjectTypeDB::bind_method(_MD("step"), &BTRootNode::step);
 }
 
 void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {

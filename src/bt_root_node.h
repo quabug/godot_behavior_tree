@@ -13,13 +13,16 @@ class BTRootNode : public BTDecoratorNode
     BehaviorTree::VirtualMachine vm;
     Variant context;
 
-	void _notification(int p_notification);	
-
 public:
     BTRootNode();
 
     virtual void add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
+
+    void set_context(const Variant& context) { this->context = context; }
+    Variant& get_context() { return context; }
+    void tick() { vm.tick(&context); }
+    void step() { vm.step(&context); }
 
 protected:
     static void _bind_methods();
