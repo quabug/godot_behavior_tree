@@ -24,8 +24,8 @@ namespace BehaviorTree { struct Node; }
 
 namespace BehaviorTree
 {
-    
-enum E_State { BH_ERROR, BH_SUCCESS, BH_FAILURE, BH_RUNNING };
+
+enum E_State { BH_ERROR = 0, BH_SUCCESS = 1, BH_FAILURE = 2, BH_RUNNING = 3 };
 
 typedef unsigned short IndexType;
 const IndexType INDEX_TYPE_MAX = 0xffff;
