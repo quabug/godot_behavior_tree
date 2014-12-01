@@ -4,3 +4,4 @@
 *.swo
 *.pyc
 unittest.run
+.fscache
