@@ -7,7 +7,7 @@ BTActionNode::BTActionNode()
 }
 
 void BTActionNode::_bind_methods() {
-	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_restore_running, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
+	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_continue, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_prepare, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_update, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_abort, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
@@ -25,7 +25,7 @@ void BTActionNode::remove_child_node(BTNode&, Vector<BehaviorTree::IndexType>& )
 
 void BTActionNode::Delegate::restore_running(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
     super::restore_running(vm, index, context);
-    script_call(BTStringNames::get_singleton()->_restore_running, index, context);
+    script_call(BTStringNames::get_singleton()->_continue, index, context);
 }
 
 void BTActionNode::Delegate::prepare(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {

@@ -36,8 +36,8 @@ func _process(delta):
 		actions[i].update_result = actions_result[i]
 	tick()
 
-func _bt_restore_running(index, context):
-	print("[",index,"]"," [restore running] [root] ")
+func _bt_continue(index, context):
+	print("[",index,"]"," [continue] [root] ")
 
 func _bt_prepare(index, context):
 	print("[",index,"]"," [prepare] [root] ")

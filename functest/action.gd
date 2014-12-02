@@ -2,7 +2,7 @@
 extends BTActionNode
 
 var counter = {
-	"restore_running": 0,
+	"continue": 0,
 	"prepare": 0,
 	"update": 0,
 	"abort": 0
@@ -10,9 +10,9 @@ var counter = {
 
 export(int, "BH_ERROR", "BH_SUCCESS", "BH_FAILURE", "BH_RUNNING") var update_result
 
-func _bt_restore_running(index, context):
-	counter["restore_running"] += 1
-	print("[",index,"]"," [restore running] [action] ")
+func _bt_continue(index, context):
+	counter["continue"] += 1
+	print("[",index,"]"," [continue] [action] ")
 
 func _bt_prepare(index, context):
 	counter["prepare"] += 1

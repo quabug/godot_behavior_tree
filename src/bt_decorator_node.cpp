@@ -7,7 +7,7 @@ BTDecoratorNode::BTDecoratorNode()
 }
 
 void BTDecoratorNode::_bind_methods() {
-	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_restore_running, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
+	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_continue, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_prepare, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_pre_update, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_post_update, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context"), PropertyInfo(Variant::INT,"child_state")) );
@@ -41,7 +41,7 @@ void BTDecoratorNode::Delegate::restore_running(
         BehaviorTree::IndexType index,
         void* context) {
     super::restore_running(vm, index, context);
-    script_call(BTStringNames::get_singleton()->_restore_running, index, context);
+    script_call(BTStringNames::get_singleton()->_continue, index, context);
 }
 
 void BTDecoratorNode::Delegate::prepare(

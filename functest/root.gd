@@ -16,8 +16,8 @@ func _process(delta):
 	print("root process")
 	tick()
 
-func _bt_restore_running(index, context):
-	print("[",index,"]"," [restore running] [root] ")
+func _bt_continue(index, context):
+	print("[",index,"]"," [continue] [root] ")
 
 func _bt_prepare(index, context):
 	print("[",index,"]"," [prepare] [root] ")

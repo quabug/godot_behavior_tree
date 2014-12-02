@@ -3,7 +3,7 @@
 BTStringNames* BTStringNames::singleton=NULL;
 
 BTStringNames::BTStringNames() {
-	_restore_running = StaticCString::create("_bt_restore_running");
+	_continue = StaticCString::create("_bt_continue");
 	_prepare = StaticCString::create("_bt_prepare");
 	_self_update = StaticCString::create("_bt_self_update");
 	_child_update = StaticCString::create("_bt_child_update");
