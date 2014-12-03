@@ -83,6 +83,34 @@ void BTRootNode::remove_child_node(BTNode& , Vector<BehaviorTree::Node*>& node_h
     }
 }
 
+void BTRootNode::move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) {
+    BTNode* parent_node = child.get_parent() ? child.get_parent()->cast_to<BTNode>() : NULL;
+    if (!parent_node) {
+        ERR_EXPLAIN("Cannot find a parent node for child.");
+        ERR_FAIL();
+        return;
+    }
+
+    BehaviorTree::IndexType parent_index = find_node_index_from_node_hierarchy(node_hierarchy);
+    BehaviorTree::NodeData parent_node_data = bt_structure_data[parent_index];
+
+    BehaviorTree::BTStructure temp_bt_structure_data;
+    BehaviorTree::NodeList temp_bt_node_list;
+    create_bt_structure(temp_bt_structure_data, temp_bt_node_list, *parent_node, parent_index);
+
+    if (temp_bt_node_list.size() != parent_node_data.end - parent_node_data.begin ||
+        temp_bt_node_list.size() != temp_bt_structure_data.size()) {
+        ERR_EXPLAIN("Move child cannot change total number of node.");
+        ERR_FAIL();
+        return;
+    }
+
+    for (BehaviorTree::IndexType i = parent_node_data.begin; i < parent_node_data.end; ++i) {
+        bt_structure_data[i] = temp_bt_structure_data[i - parent_node_data.begin];
+        bt_node_list[i] = temp_bt_node_list[i - parent_node_data.begin];
+    }
+}
+
 void BTRootNode::fetch_node_data_list_from_node_hierarchy(
         const Vector<BehaviorTree::Node*>& node_hierarchy,
         Vector<BehaviorTree::IndexType>& node_hierarchy_index) const {
@@ -111,4 +139,16 @@ BehaviorTree::IndexType BTRootNode::find_child_index(BehaviorTree::IndexType par
             node_data = bt_structure_data[node_data.end];
     }
     return parent_index;
+}
+
+BehaviorTree::IndexType BTRootNode::find_node_index_from_node_hierarchy(const Vector<BehaviorTree::Node*>& node_hierarchy) const {
+    BehaviorTree::IndexType node_index = 0;
+    for (int i = node_hierarchy.size()-1; i >= 0; --i) {
+        BehaviorTree::Node* node = node_hierarchy[i];
+        BehaviorTree::IndexType child_node_index = find_child_index(node_index, node);
+        ERR_EXPLAIN("Cannot find child index.");
+        ERR_FAIL_COND_V( node_index != child_node_index, child_node_index );
+        node_index = child_node_index;
+    }
+    return node_index;
 }

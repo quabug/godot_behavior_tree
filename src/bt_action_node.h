@@ -10,6 +10,7 @@ class BTActionNode : public BTNode
 
     virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+    virtual void move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 
     struct Delegate : public BehaviorDelegate<BehaviorTree::Action>
     {

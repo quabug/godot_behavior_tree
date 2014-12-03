@@ -18,6 +18,7 @@ public:
 
     virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+    virtual void move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 
     void set_context(const Variant& context) { this->context = context; }
     Variant& get_context() { return context; }
@@ -33,6 +34,7 @@ private:
             Vector<BehaviorTree::IndexType>& node_hierarchy_index) const;
 
     BehaviorTree::IndexType find_child_index(BehaviorTree::IndexType parent_index, BehaviorTree::Node* child) const;
+    BehaviorTree::IndexType find_node_index_from_node_hierarchy(const Vector<BehaviorTree::Node*>& node_hierarchy) const;
 };
 
 #endif

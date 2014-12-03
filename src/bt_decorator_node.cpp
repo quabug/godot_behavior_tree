@@ -36,6 +36,18 @@ void BTDecoratorNode::remove_child_node(BTNode& child, Vector<BehaviorTree::Node
     }
 }
 
+void BTDecoratorNode::move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) {
+    BTNode* p_parent = get_parent() ? get_parent()->cast_to<BTNode>() : NULL;
+	ERR_EXPLAIN("Parent node is not a BTNode.");
+	ERR_FAIL_NULL(p_parent);
+	ERR_EXPLAIN("Decorator node only allowed one child.");
+	ERR_FAIL_COND(get_child_count() > 1);
+    if (p_parent && get_child_count() <= 1) {
+        node_hierarchy.push_back(get_behavior_node());
+        p_parent->move_child_node(child, node_hierarchy);
+    }
+}
+
 void BTDecoratorNode::Delegate::restore_running(
         BehaviorTree::VirtualMachine& vm,
         BehaviorTree::IndexType index,

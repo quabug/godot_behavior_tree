@@ -13,7 +13,7 @@ public:
 
     virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) = 0;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) = 0;
-    //virtual void move_child_node(BTNode &child, int pos, Vector<BehaviorTree::IndexType> node_hierarchy) = 0;
+    virtual void move_child_node(BTNode &child, Vector<BehaviorTree::Node*>& node_hierarchy) = 0;
 
 protected:
     static void _bind_methods();
@@ -21,7 +21,7 @@ protected:
 private:
     virtual void add_child_notify(Node *p_child) override;
     virtual void remove_child_notify(Node *p_child) override;
-    //virtual void move_child_notify(Node *p_child, int pos) override;
+    virtual void move_child_notify(Node *p_child, int pos) override;
 
 };
 

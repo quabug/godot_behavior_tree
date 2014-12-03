@@ -11,6 +11,7 @@ class BTCompositeNode : public BTNode
 public:
     virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
     virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+    virtual void move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 };
 
 class BTSequenceNode : public BTCompositeNode
