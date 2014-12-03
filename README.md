@@ -61,13 +61,13 @@ Execute children nodes without interruption.
 
 Inherit: **BTCompositeNode**
 
-Always execute child from left/top to right/down. Report *BH_SUCESS*/*BH_RUNNING* to parent when a child node reported a *BH_SUCCESS*/*BH_RUNNING*, report *BH_FAILURE* to parent when all its children reported a *BH_FAILURE*.
+Always execute child from left/top to right/down. Report *BH_SUCESS* or *BH_RUNNING* to parent when a child node reported a *BH_SUCCESS* or *BH_RUNNING*, report *BH_FAILURE* to parent when all its children reported a *BH_FAILURE*.
 
 ### BTSelectorNode
 
 Inherit: **BTCompositeNode**
 
-Execute child from left/top to right/down, or restart execute at last running child. Report *BH_FAILURE*/*BH_RUNNING* to parent when a child node reported a *BH_FAILURE*/*BH_RUNNING*, report *BH_SUCCESS* to parent when all its children reported a *BH_SUCCESS*.
+Execute child from left/top to right/down, or restart execute at last running child. Report *BH_FAILURE* or *BH_RUNNING* to parent when a child node reported a *BH_FAILURE* or *BH_RUNNING*, report *BH_SUCCESS* to parent when all its children reported a *BH_SUCCESS*.
 
 ### BTActionNode
 
@@ -78,3 +78,14 @@ Constraint: Cannot have any child.
 - `void _bt_prepare(int index, var context)` prepare for running if this node was not running last tick
 - `E_State _bt_update(int index, var context)` execute action
 - `void _bt_abort(int index, var context)` abort this running node
+
+## TODO
+1. Extend godot editor for behavior tree.
+  - Cannot add child into BTActionNode.
+  - Cannot add more than one child into BTDecoratorNode and BTRootNode.
+  - Constrain BTRootNode at the top of tree.
+2. Add random pick composite.
+3. Add error handler decorator.
+4. Add more parallel nodes with different report police.
+5. More composite and decorator?
+6. A specific editor view for behavior tree in godot editor.
