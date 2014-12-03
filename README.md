@@ -10,12 +10,54 @@
 (this series of behavior tree is really helpful, but unfortunately the original post cannot be accessed since altdev.co was dead)
 
 ## Compiling as Godot module
-Link(recommend) or copy *src* directory to *$(GODOT_ROOT)/modules/behaviortree*, then [compile engine](https://github.com/okamstudio/godot/wiki/advanced#compiling--running).
+Link or copy *src* directory to *$(GODOT_ROOT)/modules/behaviortree*, then [compile engine](https://github.com/okamstudio/godot/wiki/advanced#compiling--running).
 
 ## Usage
-In editor you can find those new types of node:
-BTRootNode, BTParallelNode, BTSelectorNode, BTSequenceNode, BTDecoratorNode, BTActionNode.
+After success compile godot engine with this module, you can find those new types of node in editor:
+**BTRootNode**, **BTParallelNode**, **BTSelectorNode**, **BTSequenceNode**, **BTDecoratorNode**, **BTActionNode**.
 
-BTActionNode, BTDecoratorNode and BTRootNode can be extend by script for creating your own AI.
-BTParallelNode, BTSelectorNode and BTSequenceNode are composite node which cannot be extend by script.
-Beware that node extend by script cannot control access flow, which means if you need extra composite or a special decorator which can control access flow, you must write that composite or decorator in c++.
+**BTActionNode**, **BTDecoratorNode** and **BTRootNode** can be extend by script for creating your own AI.
+**BTParallelNode**, **BTSelectorNode** and **BTSequenceNode** are composite node which cannot be extend by script.
+Beware that node extend by script cannot control access flow. If you need extra composite or a special decorator which can control access flow, you must write that composite or decorator in c++.
+
+### BTRootNode
+Inherit: **BTDecorator**
+Constraint: Must be placed at top of behavior tree.
+- `void tick()`
+travel entire behavior tree.
+
+- `void step()`
+just one step forward of behavior tree.
+
+- `void set_context(var context)`
+
+- `var get_context()`
+
+### BTDecoratorNode
+Inherit: **BTNode**
+Constraint: Only one child allowed.
+- `void _bt_continue(int index, var context)` continue running if this node was running last tick
+- `void _bt_prepare(int index, var context)` prepare for running if this node was not running last tick
+- `E_State _bt_pre_update(int index, var context)` before run child
+- `E_State _bt_post_update(int index, var context, E_State child_state)` after run child
+- `void _bt_abort(int index, var context)` abort this running node
+
+### BTParallelNode
+Inherit: **BTCompositeNode**
+Execute children nodes without interruption.
+
+### BTSelectorNode
+Inherit: **BTCompositeNode**
+Always execute child from left/top to right/down. Report *BH_SUCESS*/*BH_RUNNING* to parent when a child node reported a *BH_SUCCESS*/*BH_RUNNING*, report *BH_FAILURE* to parent when all its children reported a *BH_FAILURE*.
+
+### BTSelectorNode
+Inherit: **BTCompositeNode**
+Execute child from left/top to right/down, or restart execute at last running child. Report *BH_FAILURE*/*BH_RUNNING* to parent when a child node reported a *BH_FAILURE*/*BH_RUNNING*, report *BH_SUCCESS* to parent when all its children reported a *BH_SUCCESS*.
+
+### BTActionNode
+Inherit: **BTNode**
+Constraint: Cannot have any child.
+- `void _bt_continue(int index, var context)` continue running if this node was running last tick
+- `void _bt_prepare(int index, var context)` prepare for running if this node was not running last tick
+- `E_State _bt_update(int index, var context)` execute action
+- `void _bt_abort(int index, var context)` abort this running node
