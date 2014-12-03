@@ -88,3 +88,4 @@ Constraint: Cannot have any child.
 3. Add error handler decorator.
 4. Add more parallel nodes with different report police.
 5. More composite and decorator?
+6. A specific editor view for behavior tree in godot editor.
