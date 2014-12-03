@@ -78,7 +78,8 @@ void BTRootNode::remove_child_node(BTNode& , Vector<BehaviorTree::Node*>& node_h
     bt_node_list.resize(new_size);
 
     int parents_count = node_hierarchy_index.size();
-    for (int i = 0; i < parents_count; ++i) {
+    // first one is child itself.
+    for (int i = 1; i < parents_count; ++i) {
         bt_structure_data[node_hierarchy_index[i]].end -= children_count;
     }
 }

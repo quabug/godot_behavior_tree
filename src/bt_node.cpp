@@ -27,6 +27,7 @@ void BTNode::remove_child_notify(Node *p_child) {
 	ERR_FAIL_NULL(p_btnode);
     if (p_btnode) {
         Vector<BehaviorTree::Node*> node_hierarchy;
+        node_hierarchy.push_back(p_btnode->get_behavior_node());
         remove_child_node(*p_btnode, node_hierarchy);
     }
 }
