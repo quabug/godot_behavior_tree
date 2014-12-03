@@ -14,24 +14,24 @@ void BTDecoratorNode::_bind_methods() {
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_abort, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 }
 
-void BTDecoratorNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
+void BTDecoratorNode::add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) {
     BTNode* p_parent = get_parent() ? get_parent()->cast_to<BTNode>() : NULL;
 	ERR_EXPLAIN("Parent node is not a BTNode.");
 	ERR_FAIL_NULL(p_parent);
 	ERR_EXPLAIN("Decorator node only allowed one child.");
 	ERR_FAIL_COND(get_child_count() > 1);
     if (p_parent && get_child_count() <= 1) {
-        node_hierarchy.push_back(get_bt_node_data().index);
+        node_hierarchy.push_back(get_behavior_node());
         p_parent->add_child_node(child, node_hierarchy);
     }
 }
 
-void BTDecoratorNode::remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
+void BTDecoratorNode::remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) {
     BTNode* p_parent = get_parent() ? get_parent()->cast_to<BTNode>() : NULL;
 	//ERR_EXPLAIN("Parent node is not a BTNode.");
 	//ERR_FAIL_NULL(p_parent);
     if (p_parent) {
-        node_hierarchy.push_back(get_bt_node_data().index);
+        node_hierarchy.push_back(get_behavior_node());
         p_parent->remove_child_node(child, node_hierarchy);
     }
 }

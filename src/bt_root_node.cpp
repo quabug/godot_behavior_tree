@@ -7,7 +7,6 @@ BTRootNode::BTRootNode()
     BehaviorTree::NodeData node_data;
     node_data.begin = 0;
     node_data.end = 1;
-    set_bt_node_data(node_data);
     bt_structure_data.push_back(node_data);
     bt_node_list.push_back(get_behavior_node());
 }
@@ -19,12 +18,14 @@ void BTRootNode::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("step"), &BTRootNode::step);
 }
 
-void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
-    node_hierarchy.push_back(0);
+void BTRootNode::add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) {
+    Vector<BehaviorTree::IndexType> node_hierarchy_index;
+    fetch_node_data_list_from_node_hierarchy(node_hierarchy, node_hierarchy_index);
+
     BehaviorTree::BTStructure temp_bt_structure_data;
     BehaviorTree::NodeList temp_bt_node_list;
     // add new child at the end of its parent.
-    int child_index = bt_structure_data[node_hierarchy[0]].end;
+    int child_index = bt_structure_data[node_hierarchy_index[0]].end;
     create_bt_structure(temp_bt_structure_data, temp_bt_node_list, child, child_index);
     BehaviorTree::IndexType children_count = temp_bt_node_list.size();
 
@@ -49,15 +50,17 @@ void BTRootNode::add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& 
         bt_node_list[child_index+i] = temp_bt_node_list[i];
     }
 
-    int parents_count = node_hierarchy.size();
+    int parents_count = node_hierarchy_index.size();
     for (int i = 0; i < parents_count; ++i) {
-        bt_structure_data[node_hierarchy[i]].end += children_count;
+        bt_structure_data[node_hierarchy_index[i]].end += children_count;
     }
 }
 
-void BTRootNode::remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) {
-    node_hierarchy.push_back(0);
-    BehaviorTree::NodeData child_node_data = child.get_bt_node_data();
+void BTRootNode::remove_child_node(BTNode& , Vector<BehaviorTree::Node*>& node_hierarchy) {
+    Vector<BehaviorTree::IndexType> node_hierarchy_index;
+    fetch_node_data_list_from_node_hierarchy(node_hierarchy, node_hierarchy_index);
+
+    BehaviorTree::NodeData child_node_data = bt_structure_data[node_hierarchy_index[0]];
     BehaviorTree::IndexType children_count = child_node_data.end - child_node_data.begin;
 
     int old_size = bt_structure_data.size();
@@ -74,8 +77,38 @@ void BTRootNode::remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType
     bt_structure_data.resize(new_size);
     bt_node_list.resize(new_size);
 
-    int parents_count = node_hierarchy.size();
+    int parents_count = node_hierarchy_index.size();
     for (int i = 0; i < parents_count; ++i) {
-        bt_structure_data[node_hierarchy[i]].end -= children_count;
+        bt_structure_data[node_hierarchy_index[i]].end -= children_count;
     }
+}
+
+void BTRootNode::fetch_node_data_list_from_node_hierarchy(
+        const Vector<BehaviorTree::Node*>& node_hierarchy,
+        Vector<BehaviorTree::IndexType>& node_hierarchy_index) const {
+
+    int node_hierarchy_size = node_hierarchy.size();
+    BehaviorTree::IndexType node_data_index = 0;
+    node_hierarchy_index.resize(node_hierarchy_size+1); // plus a root node
+    node_hierarchy_index[node_hierarchy_size] = 0;
+
+    for (int i = node_hierarchy_size-1; i >= 0; --i) {
+        BehaviorTree::Node* node = node_hierarchy[i];
+        node_data_index = find_child_index(node_data_index, node);
+        node_hierarchy_index[i] = node_data_index;
+        ERR_EXPLAIN("Cannot find child index.");
+        ERR_FAIL_COND( node_data_index != node_hierarchy_index[i] );
+    }
+}
+
+BehaviorTree::IndexType BTRootNode::find_child_index(BehaviorTree::IndexType parent_index, BehaviorTree::Node* child) const {
+    BehaviorTree::IndexType parent_end = bt_structure_data[parent_index].end;
+    BehaviorTree::NodeData node_data = bt_structure_data[parent_index+1];
+    while (node_data.end <= parent_end) {
+        if (bt_node_list[node_data.index] == child)
+            return node_data.index;
+        else
+            node_data = bt_structure_data[node_data.end];
+    }
+    return parent_index;
 }

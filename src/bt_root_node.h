@@ -16,8 +16,8 @@ class BTRootNode : public BTDecoratorNode
 public:
     BTRootNode();
 
-    virtual void add_child_node(BTNode &child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
-    virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::IndexType>& node_hierarchy) override;
+    virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+    virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 
     void set_context(const Variant& context) { this->context = context; }
     Variant& get_context() { return context; }
@@ -26,6 +26,13 @@ public:
 
 protected:
     static void _bind_methods();
+
+private:
+    void fetch_node_data_list_from_node_hierarchy(
+            const Vector<BehaviorTree::Node*>& node_hierarchy,
+            Vector<BehaviorTree::IndexType>& node_hierarchy_index) const;
+
+    BehaviorTree::IndexType find_child_index(BehaviorTree::IndexType parent_index, BehaviorTree::Node* child) const;
 };
 
 #endif

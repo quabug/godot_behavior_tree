@@ -17,7 +17,7 @@ void BTNode::add_child_notify(Node *p_child) {
 	ERR_EXPLAIN("Child node is not a BTNode.");
 	ERR_FAIL_NULL(p_btnode);
     if (p_btnode) {
-        Vector<BehaviorTree::IndexType> node_hierarchy;
+        Vector<BehaviorTree::Node*> node_hierarchy;
         add_child_node(*p_btnode, node_hierarchy);
     }
 }
@@ -27,7 +27,7 @@ void BTNode::remove_child_notify(Node *p_child) {
 	ERR_EXPLAIN("Child node is not a BTNode.");
 	ERR_FAIL_NULL(p_btnode);
     if (p_btnode) {
-        Vector<BehaviorTree::IndexType> node_hierarchy;
+        Vector<BehaviorTree::Node*> node_hierarchy;
         remove_child_node(*p_btnode, node_hierarchy);
     }
 }

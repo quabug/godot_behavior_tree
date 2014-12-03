@@ -13,12 +13,12 @@ void BTActionNode::_bind_methods() {
 	BIND_VMETHOD( MethodInfo(BTStringNames::get_singleton()->_abort, PropertyInfo(Variant::INT,"index"), PropertyInfo(Variant::NIL,"context")) );
 }
 
-void BTActionNode::add_child_node(BTNode &, Vector<BehaviorTree::IndexType>& ) {
+void BTActionNode::add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& ) {
 	ERR_EXPLAIN("Action node doesn't allow to have any child.");
 	ERR_FAIL();
 }
 
-void BTActionNode::remove_child_node(BTNode&, Vector<BehaviorTree::IndexType>& ) {
+void BTActionNode::remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& ) {
 	//ERR_EXPLAIN("Action node doesn't allow to have any child.");
 	//ERR_FAIL();
 }

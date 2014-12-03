@@ -17,7 +17,6 @@ static void create_structure_impl(BTStructure& structure_data, NodeList& node_li
             create_structure_impl(structure_data, node_list, *p_bt_node, index);
     }
     current_node_data.end = index;
-    node.set_bt_node_data(current_node_data);
 }
 
 void create_bt_structure(BTStructure& structure_data, NodeList& node_list, BTNode& node, int begin) {
