@@ -63,7 +63,7 @@ Inherit: **BTCompositeNode**
 
 Always execute child from left/top to right/down. Report *BH_SUCESS* or *BH_RUNNING* to parent when a child node reported a *BH_SUCCESS* or *BH_RUNNING*, report *BH_FAILURE* to parent when all its children reported a *BH_FAILURE*.
 
-### BTSelectorNode
+### BTSequenceNode
 
 Inherit: **BTCompositeNode**
 
