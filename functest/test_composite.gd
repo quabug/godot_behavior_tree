@@ -3,9 +3,9 @@ extends BTRootNode
 
 var count = 0
 
-var composites = [BTParallelNode.new(), BTSequenceNode.new(), BTSelectorNode.new()]
+var composites = [BTParallelNode.new(), BTSequenceNode.new(), BTSelectorNode.new(), preload("CustomParallel.gd").new()]
 
-export(int, "parallel", "sequence", "selector") var composite_type
+export(int, "parallel", "sequence", "selector", "custom_parallel") var composite_type
 
 const state = ["BH_ERROR", "BH_SUCCESS", "BH_FAILURE", "BH_RUNNING"]
 var node_list = []

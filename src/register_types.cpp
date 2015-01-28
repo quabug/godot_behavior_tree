@@ -6,6 +6,7 @@
 #include "bt_action_node.h"
 #include "bt_composite_node.h"
 #include "bt_decorator_node.h"
+#include "bt_custom_parallel_node.h"
 
 void register_behaviortree_types() {
     BTStringNames::create();
@@ -16,6 +17,7 @@ void register_behaviortree_types() {
     ObjectTypeDB::register_type<BTSequenceNode>();
     ObjectTypeDB::register_type<BTSelectorNode>();
     ObjectTypeDB::register_type<BTParallelNode>();
+    ObjectTypeDB::register_type<BTCustomParallelNode>();
 }
 
 void unregister_behaviortree_types() {
