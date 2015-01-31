@@ -16,7 +16,7 @@ void to_vm(BTStructure& structure_data, NodeList& node_list, ConstructNode& node
     to_vm_impl(structure_data, node_list, node, index);
 }
 
-void tick_vm(VirtualMachine& vm, MockAgent& agent) {
+void tick_vm(VirtualMachine& vm, MockAgent& agent, VMRunningData& running_data) {
     agent.reset();
-    vm.tick(&agent);
+    vm.tick(&agent, running_data);
 }

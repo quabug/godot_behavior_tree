@@ -2,10 +2,9 @@
 #include "utils.h"
 
 TEST_CASE( "Node Structure", "[nodestructure]" ) {
-    VMRunningData data;
     BTStructure structure_data;
     NodeList node_list;
-    VirtualMachine vm(data, node_list, structure_data);
+    VirtualMachine vm(node_list, structure_data);
 
     SECTION( "single node" ) {
         ConstructNode node;

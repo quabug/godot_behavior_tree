@@ -5,7 +5,7 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
     VMRunningData data;
     BTStructure structure_data;
     NodeList node_list;
-    VirtualMachine vm(data, node_list, structure_data);
+    VirtualMachine vm(node_list, structure_data);
 
     SECTION( "{R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}" ) {
         MockParallel parallel;
@@ -47,7 +47,7 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
         action[4].update_result = BH_FAILURE;
         action[5].update_result = BH_SUCCESS;
         action[6].update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {R,[S,F,R],(F,+S,R)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -105,7 +105,7 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
         action[4].update_result = BH_RUNNING;
         action[5].update_result = BH_SUCCESS;
         action[6].update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -162,7 +162,7 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
         action[4].update_result = BH_FAILURE;
         action[5].update_result = BH_FAILURE;
         action[6].update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -215,10 +215,9 @@ TEST_CASE( "Behavior Tree", "[bt_comp]" ) {
 }
 
 TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
-    VMRunningData data_bar;
     BTStructure structure_data;
     NodeList node_list;
-    VirtualMachine vm(data_bar, node_list, structure_data);
+    VirtualMachine vm(node_list, structure_data);
 
     MockParallel parallel;
     MockSelector selector;
@@ -261,7 +260,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[4].update_result = BH_FAILURE;
         action[5].update_result = BH_SUCCESS;
         action[6].update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {R,[S,F,R],(F,+S,R)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -319,7 +318,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[4].update_result = BH_RUNNING;
         action[5].update_result = BH_SUCCESS;
         action[6].update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -376,7 +375,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[4].update_result = BH_FAILURE;
         action[5].update_result = BH_FAILURE;
         action[6].update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -450,7 +449,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[4].update_result = BH_FAILURE;
         action[5].update_result = BH_SUCCESS;
         action[6].update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {R,[S,F,R],(F,+S,R)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -508,7 +507,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[4].update_result = BH_RUNNING;
         action[5].update_result = BH_SUCCESS;
         action[6].update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {R,[S,F,R],(F,+S,R)}->{S,[S,S,R],(R,+S,R)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);
@@ -565,7 +564,7 @@ TEST_CASE( "Behavior Tree Reuse", "[bt_reuse]" ) {
         action[4].update_result = BH_FAILURE;
         action[5].update_result = BH_FAILURE;
         action[6].update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         // {S,[S,S,R],(R,+S,R)}->{F,[R,S,R],(F,+F,S)}
         REQUIRE(parallel_data.child_update_result == BH_SUCCESS);
         REQUIRE(parallel_data.counter.prepare == 1);

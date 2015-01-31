@@ -5,7 +5,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
     VMRunningData data;
     BTStructure structure_data;
     NodeList node_list;
-    VirtualMachine vm(data, node_list, structure_data);
+    VirtualMachine vm(node_list, structure_data);
     MockSequence sequence;
     MockAgent agent;
     agent.data_list.resize(1);
@@ -14,7 +14,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         const MockAgent::NodeData& sequence_data = agent.data_list[0];
         to_vm(structure_data, node_list, sequence.inner_node);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
         REQUIRE(sequence_data.counter.self_update == 1);
@@ -32,7 +32,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         to_vm(structure_data, node_list, sequence.inner_node);
 
         action_foo.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -43,7 +43,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_foo_data.counter.self_update == 1);
         REQUIRE(action_foo_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -61,7 +61,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         to_vm(structure_data, node_list, sequence.inner_node);
 
         action_foo.update_result = BH_FAILURE;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -72,7 +72,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_foo_data.counter.self_update == 1);
         REQUIRE(action_foo_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -90,7 +90,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         to_vm(structure_data, node_list, sequence.inner_node);
 
         action_foo.update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -101,7 +101,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_foo_data.counter.self_update == 1);
         REQUIRE(action_foo_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 0);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -126,7 +126,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -141,7 +141,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 1);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -165,7 +165,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_FAILURE;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -180,7 +180,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 1);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -204,7 +204,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_FAILURE;
         action_bar.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -219,7 +219,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 0);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -243,7 +243,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_RUNNING;
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -258,7 +258,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 1);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 0);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -282,7 +282,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -298,7 +298,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         action_foo.update_result = BH_FAILURE;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 0);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -322,7 +322,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_RUNNING;
         action_bar.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(sequence_data.counter.prepare == 1);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -338,7 +338,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.child_update == 0);
 
         action_foo.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(sequence_data.counter.prepare == 0);
         REQUIRE(sequence_data.counter.abort == 0);
@@ -368,7 +368,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(root_sequence_data.counter.prepare == 1);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -388,7 +388,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 1);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_SUCCESS);
         REQUIRE(root_sequence_data.counter.prepare == 1);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -418,7 +418,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_FAILURE;
         action_bar.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(root_sequence_data.counter.prepare == 1);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -438,7 +438,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 0);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_FAILURE);
         REQUIRE(root_sequence_data.counter.prepare == 1);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -468,7 +468,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_RUNNING;
         action_bar.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(root_sequence_data.counter.prepare == 1);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -488,7 +488,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 0);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(root_sequence_data.counter.prepare == 0);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -518,7 +518,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
 
         action_foo.update_result = BH_SUCCESS;
         action_bar.update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(root_sequence_data.counter.prepare == 1);
         REQUIRE(root_sequence_data.counter.abort == 0);
@@ -538,7 +538,7 @@ TEST_CASE( "Behavior Tree Sequence", "[bt_seq]" ) {
         REQUIRE(action_bar_data.counter.self_update == 1);
         REQUIRE(action_bar_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(root_sequence_data.child_update_result == BH_RUNNING);
         REQUIRE(root_sequence_data.counter.prepare == 0);
         REQUIRE(root_sequence_data.counter.abort == 0);

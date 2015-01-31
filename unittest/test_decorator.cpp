@@ -5,7 +5,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
     VMRunningData data;
     BTStructure structure_data;
     NodeList node_list;
-    VirtualMachine vm(data, node_list, structure_data);
+    VirtualMachine vm(node_list, structure_data);
     MockDecorator decorator;
     MockAgent agent;
     agent.data_list.resize(1);
@@ -14,7 +14,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         const MockAgent::NodeData& decorator_data = agent.data_list[0];
         to_vm(structure_data, node_list, decorator.inner_node);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.counter.prepare == 1);
         REQUIRE(decorator_data.counter.abort == 0);
         REQUIRE(decorator_data.counter.self_update == 1);
@@ -32,7 +32,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         to_vm(structure_data, node_list, decorator.inner_node);
 
         action_foo.update_result = BH_SUCCESS;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.child_update_result == BH_SUCCESS);
         REQUIRE(decorator_data.counter.prepare == 1);
         REQUIRE(decorator_data.counter.abort == 0);
@@ -43,7 +43,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         REQUIRE(action_foo_data.counter.self_update == 1);
         REQUIRE(action_foo_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.child_update_result == BH_SUCCESS);
         REQUIRE(decorator_data.counter.prepare == 1);
         REQUIRE(decorator_data.counter.abort == 0);
@@ -61,7 +61,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         to_vm(structure_data, node_list, decorator.inner_node);
 
         action_foo.update_result = BH_FAILURE;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.child_update_result == BH_FAILURE);
         REQUIRE(decorator_data.counter.prepare == 1);
         REQUIRE(decorator_data.counter.abort == 0);
@@ -72,7 +72,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         REQUIRE(action_foo_data.counter.self_update == 1);
         REQUIRE(action_foo_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.child_update_result == BH_FAILURE);
         REQUIRE(decorator_data.counter.prepare == 1);
         REQUIRE(decorator_data.counter.abort == 0);
@@ -90,7 +90,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         to_vm(structure_data, node_list, decorator.inner_node);
 
         action_foo.update_result = BH_RUNNING;
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.child_update_result == BH_RUNNING);
         REQUIRE(decorator_data.counter.prepare == 1);
         REQUIRE(decorator_data.counter.abort == 0);
@@ -101,7 +101,7 @@ TEST_CASE( "Behavior Tree FaitureDecorator", "[bt_dec]" ) {
         REQUIRE(action_foo_data.counter.self_update == 1);
         REQUIRE(action_foo_data.counter.child_update == 0);
 
-        tick_vm(vm, agent);
+        tick_vm(vm, agent, data);
         REQUIRE(decorator_data.child_update_result == BH_RUNNING);
         REQUIRE(decorator_data.counter.prepare == 0);
         REQUIRE(decorator_data.counter.abort == 0);
