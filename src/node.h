@@ -3,7 +3,7 @@
 
 #include "typedef.h"
 
-namespace BehaviorTree { class VMRunningData; }
+namespace BehaviorTree { struct VMRunningData; }
 namespace BehaviorTree { class VirtualMachine; }
 
 namespace BehaviorTree
