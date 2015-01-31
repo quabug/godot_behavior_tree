@@ -1,9 +1,11 @@
+#include "variant.h"
 #include "bt_root_node.h"
 #include "bt_utils.h"
 
 BTRootNode::BTRootNode()
 	: vm(bt_node_list, bt_structure_data)
 {
+	running_data_list.resize(1);
 	BehaviorTree::NodeData node_data;
 	node_data.begin = 0;
 	node_data.end = 1;
@@ -12,10 +14,23 @@ BTRootNode::BTRootNode()
 }
 
 void BTRootNode::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("set_context", "context"), &BTRootNode::set_context);
-	ObjectTypeDB::bind_method(_MD("get_context"), &BTRootNode::get_context);
-	ObjectTypeDB::bind_method(_MD("tick"), &BTRootNode::tick);
-	ObjectTypeDB::bind_method(_MD("step"), &BTRootNode::step);
+	ObjectTypeDB::bind_method(_MD("tick","context","index"),&BTRootNode::tick,DEFVAL(0));
+	ObjectTypeDB::bind_method(_MD("step","context","index"), &BTRootNode::step,DEFVAL(0));
+	ObjectTypeDB::bind_method(_MD("create_running_data"), &BTRootNode::create_running_data);
+}
+
+void BTRootNode::tick(Object* context, int index) {
+	vm.tick(context, running_data_list[index]);
+}
+
+void BTRootNode::step(Object* context, int index) {
+	vm.step(context, running_data_list[index]);
+}
+
+int BTRootNode::create_running_data() {
+	int running_data_size = running_data_list.size();
+	running_data_list.resize(running_data_size+1);
+	return running_data_size;
 }
 
 void BTRootNode::add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) {

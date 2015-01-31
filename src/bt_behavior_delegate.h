@@ -23,7 +23,8 @@ Variant BehaviorDelegate<BEHAVIOR_NODE>::script_call(StringName method, Behavior
 	ScriptInstance* script = node.get_script_instance();
 	if (script && script->has_method(method)) {
 		Variant index_var(index);
-		const Variant* ptr[2]={ &index_var, static_cast<Variant*>(context) };
+		Variant context_var(static_cast<Object*>(context));
+		const Variant* ptr[2]={ &index_var, &context_var };
 		Variant::CallError err;
 		v = script->call(method,ptr,2,err);
 	}
@@ -38,8 +39,9 @@ Variant BehaviorDelegate<BEHAVIOR_NODE>::script_call(StringName method, Behavior
 	ScriptInstance* script = node.get_script_instance();
 	if (script && script->has_method(method)) {
 		Variant index_var(index);
+		Variant context_var(static_cast<Object*>(context));
 		Variant child_state_var(static_cast<int>(child_state));
-		const Variant* ptr[3]={ &index_var, static_cast<Variant*>(context), &child_state_var };
+		const Variant* ptr[3]={ &index_var, &context_var, &child_state_var };
 		Variant::CallError err;
 		v = script->call(method,ptr,3,err);
 	}

@@ -9,9 +9,8 @@ class BTRootNode : public BTDecoratorNode
 
 	BehaviorTree::BTStructure bt_structure_data;
 	BehaviorTree::NodeList bt_node_list;
-	BehaviorTree::VMRunningData bt_running_data;
 	BehaviorTree::VirtualMachine vm;
-	Variant context;
+	Vector<BehaviorTree::VMRunningData> running_data_list;
 
 public:
 	BTRootNode();
@@ -20,10 +19,9 @@ public:
 	virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 	virtual void move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 
-	void set_context(const Variant& context) { this->context = context; }
-	Variant& get_context() { return context; }
-	void tick() { vm.tick(&context, bt_running_data); }
-	void step() { vm.step(&context, bt_running_data); }
+	int create_running_data();
+	void tick(Object* context, int index = 0);
+	void step(Object* context, int index = 0);
 
 protected:
 	static void _bind_methods();
