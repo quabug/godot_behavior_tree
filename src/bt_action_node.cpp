@@ -2,7 +2,7 @@
 #include "bt_string_names.h"
 
 BTActionNode::BTActionNode()
-    : delegate(*this)
+	: delegate(*this)
 {
 }
 
@@ -28,24 +28,24 @@ void BTActionNode::move_child_node(BTNode&, Vector<BehaviorTree::Node*>& ) {
 	//ERR_FAIL();
 }
 
-void BTActionNode::Delegate::restore_running(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
-    super::restore_running(vm, index, context);
-    script_call(BTStringNames::get_singleton()->_continue, index, context);
+void BTActionNode::Delegate::restore_running(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context, BehaviorTree::VMRunningData& running_data) {
+	super::restore_running(vm, index, context, running_data);
+	script_call(BTStringNames::get_singleton()->_continue, index, context);
 }
 
-void BTActionNode::Delegate::prepare(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
-    super::prepare(vm, index, context);
-    script_call(BTStringNames::get_singleton()->_prepare, index, context);
+void BTActionNode::Delegate::prepare(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context, BehaviorTree::VMRunningData& running_data) {
+	super::prepare(vm, index, context, running_data);
+	script_call(BTStringNames::get_singleton()->_prepare, index, context);
 }
 
-BehaviorTree::E_State BTActionNode::Delegate::update(BehaviorTree::IndexType index, void* context) {
-    Variant result_state = script_call(BTStringNames::get_singleton()->_update, index, context);
-    ERR_EXPLAIN("Variant type is not int.");
-    ERR_FAIL_COND_V( result_state.get_type() != Variant::INT, BehaviorTree::BH_ERROR );
-    return static_cast<BehaviorTree::E_State>(static_cast<int>(result_state));
+BehaviorTree::E_State BTActionNode::Delegate::update(BehaviorTree::IndexType index, void* context, BehaviorTree::VMRunningData&) {
+	Variant result_state = script_call(BTStringNames::get_singleton()->_update, index, context);
+	ERR_EXPLAIN("Variant type is not int.");
+	ERR_FAIL_COND_V( result_state.get_type() != Variant::INT, BehaviorTree::BH_ERROR );
+	return static_cast<BehaviorTree::E_State>(static_cast<int>(result_state));
 }
 
-void BTActionNode::Delegate::abort(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context) {
-    super::abort(vm, index, context);
-    script_call(BTStringNames::get_singleton()->_abort, index, context);
+void BTActionNode::Delegate::abort(BehaviorTree::VirtualMachine& vm, BehaviorTree::IndexType index, void* context, BehaviorTree::VMRunningData& running_data) {
+	super::abort(vm, index, context, running_data);
+	script_call(BTStringNames::get_singleton()->_abort, index, context);
 }

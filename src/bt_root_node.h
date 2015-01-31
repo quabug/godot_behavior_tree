@@ -5,36 +5,36 @@
 
 class BTRootNode : public BTDecoratorNode
 {
-    OBJ_TYPE(BTRootNode, BTDecoratorNode);
+	OBJ_TYPE(BTRootNode, BTDecoratorNode);
 
-    BehaviorTree::BTStructure bt_structure_data;
-    BehaviorTree::NodeList bt_node_list;
-    BehaviorTree::VMRunningData bt_running_data;
-    BehaviorTree::VirtualMachine vm;
-    Variant context;
+	BehaviorTree::BTStructure bt_structure_data;
+	BehaviorTree::NodeList bt_node_list;
+	BehaviorTree::VMRunningData bt_running_data;
+	BehaviorTree::VirtualMachine vm;
+	Variant context;
 
 public:
-    BTRootNode();
+	BTRootNode();
 
-    virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
-    virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
-    virtual void move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+	virtual void add_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+	virtual void remove_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
+	virtual void move_child_node(BTNode& child, Vector<BehaviorTree::Node*>& node_hierarchy) override;
 
-    void set_context(const Variant& context) { this->context = context; }
-    Variant& get_context() { return context; }
-    void tick() { vm.tick(&context); }
-    void step() { vm.step(&context); }
+	void set_context(const Variant& context) { this->context = context; }
+	Variant& get_context() { return context; }
+	void tick() { vm.tick(&context, bt_running_data); }
+	void step() { vm.step(&context, bt_running_data); }
 
 protected:
-    static void _bind_methods();
+	static void _bind_methods();
 
 private:
-    void fetch_node_data_list_from_node_hierarchy(
-            const Vector<BehaviorTree::Node*>& node_hierarchy,
-            Vector<BehaviorTree::IndexType>& node_hierarchy_index) const;
+	void fetch_node_data_list_from_node_hierarchy(
+			const Vector<BehaviorTree::Node*>& node_hierarchy,
+			Vector<BehaviorTree::IndexType>& node_hierarchy_index) const;
 
-    BehaviorTree::IndexType find_child_index(BehaviorTree::IndexType parent_index, BehaviorTree::Node* child) const;
-    BehaviorTree::IndexType find_node_index_from_node_hierarchy(const Vector<BehaviorTree::Node*>& node_hierarchy) const;
+	BehaviorTree::IndexType find_child_index(BehaviorTree::IndexType parent_index, BehaviorTree::Node* child) const;
+	BehaviorTree::IndexType find_node_index_from_node_hierarchy(const Vector<BehaviorTree::Node*>& node_hierarchy) const;
 };
 
 #endif
