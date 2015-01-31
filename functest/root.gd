@@ -8,13 +8,12 @@ var node_list = []
 
 func _ready():
 	print("root ready")
-	set_context(self)
 	set_process(true)
 
 func _process(delta):
 	print(" ")
 	print("root process")
-	tick()
+	tick(self)
 
 func _bt_continue(index, context):
 	print("[",index,"]"," [continue] [root] ")

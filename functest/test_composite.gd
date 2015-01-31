@@ -22,7 +22,6 @@ var update_results = [ # each tick array
 
 func _ready():
 	print("root ready")
-	set_context(self)
 	set_process(true)
 	add_child(composites[composite_type])
 	for act in actions:
@@ -34,7 +33,7 @@ func _process(delta):
 	var actions_result = update_results[count]
 	for i in range(actions.size()):
 		actions[i].update_result = actions_result[i]
-	tick()
+	tick(self)
 
 func _bt_continue(index, context):
 	print("[",index,"]"," [continue] [root] ")
