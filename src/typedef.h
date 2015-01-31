@@ -32,11 +32,11 @@ const IndexType INDEX_TYPE_MAX = 0xffff;
 
 struct NodeData
 {
-    union {
-    IndexType begin;
-    IndexType index;
-    };
-    IndexType end;
+	union {
+	IndexType begin;
+	IndexType index;
+	};
+	IndexType end;
 };
 
 #if defined(BEHAVIOR_TREE_AS_GODOT_MODULE)
@@ -45,12 +45,12 @@ template<typename T>
 class BTVector : public Vector<T>
 {
 public:
-    T &      back()       { return Vector<T>::operator[](Vector<T>::size()-1); }
-    T const& back() const { return Vector<T>::operator[](Vector<T>::size()-1); }
+	T &	  back()	   { return Vector<T>::operator[](Vector<T>::size()-1); }
+	T const& back() const { return Vector<T>::operator[](Vector<T>::size()-1); }
 
-    void pop_back() { Vector<T>::resize(Vector<T>::size()-1); }
+	void pop_back() { Vector<T>::resize(Vector<T>::size()-1); }
 
-    void swap(BTVector& other) { other = *this; Vector<T>::clear(); }
+	void swap(BTVector& other) { other = *this; Vector<T>::clear(); }
 };
 
 template<typename COMPARATOR, typename T>

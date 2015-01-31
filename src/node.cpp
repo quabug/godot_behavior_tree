@@ -13,24 +13,24 @@ void NodeImpl::abort(VirtualMachine& , IndexType, void* , VMRunningData& ) {}
 
 // Action
 E_State Action::self_update(VirtualMachine&, IndexType index, void* context, VMRunningData& running_data) {
-    return update(index, context, running_data);
+	return update(index, context, running_data);
 }
 
 E_State Action::update(IndexType, void*, VMRunningData& ) { return BH_SUCCESS; }
 
 // Decorator
 E_State Decorator::self_update(VirtualMachine& vm, IndexType index, void* context, VMRunningData& running_data) {
-    E_State result = pre_update(index, context, running_data);
-    if (result == BH_SUCCESS) {
-        result = BH_RUNNING;
-    } else {
-        vm.move_index_to_node_end(index, running_data);
-    }
-    return result;
+	E_State result = pre_update(index, context, running_data);
+	if (result == BH_SUCCESS) {
+		result = BH_RUNNING;
+	} else {
+		vm.move_index_to_node_end(index, running_data);
+	}
+	return result;
 }
 
 E_State Decorator::child_update(VirtualMachine&, IndexType index, void* context, E_State child_state, VMRunningData& running_data) {
-    return post_update(index, context, child_state, running_data);
+	return post_update(index, context, child_state, running_data);
 }
 
 E_State Decorator::pre_update(IndexType, void*, VMRunningData& ) { return BH_SUCCESS; }

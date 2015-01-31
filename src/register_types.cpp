@@ -9,18 +9,18 @@
 #include "bt_custom_parallel_node.h"
 
 void register_behaviortree_types() {
-    BTStringNames::create();
+	BTStringNames::create();
 
-    ObjectTypeDB::register_type<BTRootNode>();
-    ObjectTypeDB::register_type<BTActionNode>();
-    ObjectTypeDB::register_type<BTDecoratorNode>();
-    ObjectTypeDB::register_type<BTSequenceNode>();
-    ObjectTypeDB::register_type<BTSelectorNode>();
-    ObjectTypeDB::register_type<BTParallelNode>();
-    ObjectTypeDB::register_type<BTCustomParallelNode>();
+	ObjectTypeDB::register_type<BTRootNode>();
+	ObjectTypeDB::register_type<BTActionNode>();
+	ObjectTypeDB::register_type<BTDecoratorNode>();
+	ObjectTypeDB::register_type<BTSequenceNode>();
+	ObjectTypeDB::register_type<BTSelectorNode>();
+	ObjectTypeDB::register_type<BTParallelNode>();
+	ObjectTypeDB::register_type<BTCustomParallelNode>();
 }
 
 void unregister_behaviortree_types() {
-    BTStringNames::free();
+	BTStringNames::free();
 }
 
