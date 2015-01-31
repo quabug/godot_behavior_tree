@@ -29,15 +29,11 @@ Beware that node extend by script cannot control access flow. If you need extra 
 Inherit: **BTDecorator**
 
 Constraint: Must be placed at top of behavior tree.
-- `void tick()`
+- `void tick(Object context, int running_data_index)`
 travel entire behavior tree.
 
-- `void step()`
-just one step forward of behavior tree.
-
-- `void set_context(var context)`
-
-- `var get_context()`
+- `void step(Object context, int running_data_index)`
+just one step forward
 
 ### BTDecoratorNode
 
@@ -45,11 +41,11 @@ Inherit: **BTNode**
 
 Constraint: Only one child allowed.
 
-- `void _bt_continue(int index, var context)` continue running if this node was running last tick
-- `void _bt_prepare(int index, var context)` prepare for running if this node was not running last tick
-- `E_State _bt_pre_update(int index, var context)` before run child
-- `E_State _bt_post_update(int index, var context, E_State child_state)` after run child
-- `void _bt_abort(int index, var context)` abort this running node
+- `void _bt_continue(int index, Object context)` continue running if this node was running last tick
+- `void _bt_prepare(int index, Object context)` prepare for running if this node was not running last tick
+- `E_State _bt_pre_update(int index, Object context)` before run child
+- `E_State _bt_post_update(int index, Object context, E_State child_state)` after run child
+- `void _bt_abort(int index, Object context)` abort this running node
 
 ### BTParallelNode
 
@@ -74,10 +70,10 @@ Execute child from left/top to right/down, or restart execute at last running ch
 Inherit: **BTNode**
 
 Constraint: Cannot have any child.
-- `void _bt_continue(int index, var context)` continue running if this node was running last tick
-- `void _bt_prepare(int index, var context)` prepare for running if this node was not running last tick
-- `E_State _bt_update(int index, var context)` execute action
-- `void _bt_abort(int index, var context)` abort this running node
+- `void _bt_continue(int index, Object context)` continue running if this node was running last tick
+- `void _bt_prepare(int index, Object context)` prepare for running if this node was not running last tick
+- `E_State _bt_update(int index, Object context)` execute action
+- `void _bt_abort(int index, Object context)` abort this running node
 
 ## TODO
 1. Extend godot editor for behavior tree.
